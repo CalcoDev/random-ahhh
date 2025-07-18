@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c5f20vsnm5t0b"]
 
-[ext_resource type="Script" uid="uid://bhi8382pkausd" path="res://scene.gd" id="1_nxogm"]
-[ext_resource type="Shader" uid="uid://b050krm8le1sf" path="res://paint.gdshader" id="2_3253y"]
+[ext_resource type="Script" uid="uid://bhi8382pkausd" path="res://front_back_buffer/scene.gd" id="1_nxogm"]
+[ext_resource type="Shader" uid="uid://b050krm8le1sf" path="res://front_back_buffer/paint.gdshader" id="2_3253y"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nxogm"]
 shader = ExtResource("2_3253y")
@@ -28,9 +28,11 @@ offset_bottom = 240.0
 
 [node name="SubViewport" type="SubViewport" parent="Front"]
 transparent_bg = true
+handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(240, 240)
 render_target_clear_mode = 1
+render_target_update_mode = 4
 
 [node name="Color" type="ColorRect" parent="Front/SubViewport"]
 material = SubResource("ShaderMaterial_nxogm")

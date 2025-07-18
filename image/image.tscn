@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://c53h8q3d377cm"]
+
+[ext_resource type="Script" uid="uid://c57bixu0ea5ha" path="res://image/mouse_draw.gd" id="1_k0qp8"]
+[ext_resource type="Shader" uid="uid://b13nx75ylmx0m" path="res://image/inner_outline.gdshader" id="1_onfjp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3hwda"]
+shader = ExtResource("1_onfjp")
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/line_thickness = 1.0
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 240.0
+offset_bottom = 240.0
+color = Color(0.0705882, 0, 0.113725, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_3hwda")
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_k0qp8")
