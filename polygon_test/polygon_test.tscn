@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://ci6gi2psyth54"]
+
+[ext_resource type="Shader" uid="uid://brpa7npfn4ofd" path="res://polygon_test/polygon_test.gdshader" id="1_fjnoq"]
+[ext_resource type="Texture2D" uid="uid://8x1oo8isy3h8" path="res://asriel/assets/_debug.png" id="2_ures8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ures8"]
+shader = ExtResource("1_fjnoq")
+shader_parameter/u_tex = ExtResource("2_ures8")
+
+[node name="PolygonTest" type="Node2D"]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(2, 2)
+
+[node name="ColorRect" type="ColorRect" parent="SubViewport"]
+material = SubResource("ShaderMaterial_ures8")
+offset_right = 40.0
+offset_bottom = 40.0
