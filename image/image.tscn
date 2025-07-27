@@ -1,22 +1,136 @@
-[gd_scene load_steps=4 format=3 uid="uid://c53h8q3d377cm"]
+[gd_scene load_steps=17 format=3 uid="uid://c53h8q3d377cm"]
 
 [ext_resource type="Script" uid="uid://c57bixu0ea5ha" path="res://image/mouse_draw.gd" id="1_k0qp8"]
 [ext_resource type="Shader" uid="uid://b13nx75ylmx0m" path="res://image/inner_outline.gdshader" id="1_onfjp"]
+[ext_resource type="Script" uid="uid://umy8yogvhec7" path="res://image/light_emitter_rotate.gd" id="2_pi4rq"]
+[ext_resource type="Shader" uid="uid://bdm00jkruelvc" path="res://image/point_light.gdshader" id="3_3hwda"]
+[ext_resource type="Shader" uid="uid://ddvibr4pj2xi2" path="res://image/voronoi_seed.gdshader" id="5_0ra55"]
+[ext_resource type="Script" uid="uid://bipmr4ojdok6f" path="res://image/rendering_pipeline.gd" id="5_80plw"]
+[ext_resource type="Shader" uid="uid://ta8ymwmwmhju" path="res://image/jump_flood_pass.gdshader" id="7_q8c2p"]
+[ext_resource type="Shader" uid="uid://rhyddyr1fgsy" path="res://image/distance_field.gdshader" id="8_omurv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ihwnq"]
+shader = ExtResource("3_3hwda")
+shader_parameter/u_pos = Vector2(-0.12, -0.075)
+shader_parameter/u_intensity = 0.995
+shader_parameter/u_radial_falloff = 1.0
+shader_parameter/u_radial_falloff_steps = 10
+shader_parameter/u_light_tint = Color(0.889116, 0.327151, 0.145668, 1)
+shader_parameter/u_max_raymarch_steps = 128
+
+[sub_resource type="Curve" id="Curve_pi4rq"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_0ra55"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_80plw"]
+_limits = [1.0, 8.0, 0.0, 1.0]
+_data = [Vector2(0, 8), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3hwda"]
 shader = ExtResource("1_onfjp")
 shader_parameter/line_color = Color(1, 1, 1, 1)
 shader_parameter/line_thickness = 1.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_80plw"]
+shader = ExtResource("5_0ra55")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_omurv"]
+shader = ExtResource("7_q8c2p")
+shader_parameter/u_offset = 0.0
+shader_parameter/u_level = 0.0
+shader_parameter/u_max_steps = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_n4ph8"]
+shader = ExtResource("8_omurv")
+shader_parameter/u_dist_mod = 1.0
+
 [node name="Node2D" type="Node2D"]
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Scene" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="SceneColours" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="SceneNormals" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="PointLight" type="ColorRect" parent="." node_paths=PackedStringArray("distance_field_vp")]
+visible = false
+material = SubResource("ShaderMaterial_ihwnq")
 offset_right = 240.0
 offset_bottom = 240.0
-color = Color(0.0705882, 0, 0.113725, 1)
+script = ExtResource("2_pi4rq")
+distance_field_vp = NodePath("../DistanceField")
+rot_speed = 2.0
+rot_place = 0.1
+intensity = SubResource("Curve_pi4rq")
+falloff = SubResource("Curve_0ra55")
+falloff_steps = SubResource("Curve_80plw")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="WallMap" type="TextureRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_3hwda")
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_k0qp8")
+
+[node name="RenderingPipeline" type="Node" parent="." node_paths=PackedStringArray("wall_map", "vp_seed", "vp_jfa_pass", "vp_distance_pass", "debug_subviewport_container")]
+script = ExtResource("5_80plw")
+wall_map = NodePath("../WallMap")
+vp_seed = NodePath("../VoronoiSeed")
+vp_jfa_pass = NodePath("../JumpFloodPass")
+vp_distance_pass = NodePath("../DistanceField")
+debug_subviewport_container = NodePath("../SubViewportContainer")
+
+[node name="VoronoiSeed" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="VoronoiSeed"]
+material = SubResource("ShaderMaterial_80plw")
+offset_right = 240.0
+offset_bottom = 240.0
+
+[node name="JumpFloodPass" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="JumpFloodPass"]
+material = SubResource("ShaderMaterial_omurv")
+offset_right = 240.0
+offset_bottom = 240.0
+
+[node name="DistanceField" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(240, 240)
+render_target_update_mode = 4
+
+[node name="TextureRect" type="TextureRect" parent="DistanceField"]
+material = SubResource("ShaderMaterial_n4ph8")
+offset_right = 240.0
+offset_bottom = 240.0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0

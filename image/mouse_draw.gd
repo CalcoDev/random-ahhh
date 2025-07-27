@@ -5,14 +5,14 @@ var WALL_COLOR := Color.hex(0x111111ff)
 func _ready() -> void:
     var img := Image.create_empty(240, 240, false, Image.FORMAT_RGBAF)
 
-    _bergen_circle(img, img.get_size() / 2.0, 105, true)
-    _bergen_circle(img, Vector2(80, 30), 15)
-    _bergen_circle(img, Vector2(47, 89), 30)
-    _bergen_circle(img, Vector2(15, 149), 15)
-    _bergen_circle(img, Vector2(240 - 80, 240 - 30), 15)
+    # _bergen_circle(img, img.get_size() / 2.0, 105, true)
+    # _bergen_circle(img, Vector2(80, 30), 15)
+    # _bergen_circle(img, Vector2(47, 89), 30)
+    # _bergen_circle(img, Vector2(15, 149), 15)
+    # _bergen_circle(img, Vector2(240 - 80, 240 - 30), 15)
     _bergen_circle(img, Vector2(240 - 47, 240 - 89), 30)
     _bergen_circle(img, Vector2(240 - 15, 240 - 149), 15)
-    _bergen_circle(img, Vector2(120, 120), 27)
+    # _bergen_circle(img, Vector2(120, 120), 27)
 
     self.texture = ImageTexture.create_from_image(img)
 
