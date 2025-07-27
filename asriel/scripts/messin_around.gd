@@ -56,29 +56,21 @@ func _generate_zones() -> void:
     colors.resize(partition_idx + 1)
     for i in partition_idx + 1:
         colors[i] = Color.from_rgba8(randi() % 255, randi() % 255, randi() % 255, 255)
-    # for cell in cell_to_partition:
-    #     var partition: int = cell_to_partition[cell]
-    #     var line = _spawn_line(line_child, 16.0, colors[partition])
-    #     var pos := map.to_global(map.map_to_local(cell))
-    #     line.add_point(pos - Vector2.RIGHT * 8.0)
-    #     line.add_point(pos + Vector2.RIGHT * 8.0)
 
     for marker in zones:
-        var prev_pixel := Vector2i.ZERO
-        var start_pos := map.local_to_map(map.to_local(marker.global_position))
-        while not _is_solid(start_pos + Vector2i.RIGHT):
-            start_pos += Vector2i.RIGHT
-            _draw_tile(start_pos, Color.HOT_PINK)
-        prev_pixel = start_pos
-        start_pos += Vector2i.RIGHT
+        var touched_partitions := _get_partitions_touched_by_free_zone(marker.global_position, cell_to_partition)
 
-        var outline := _trace(start_pos, prev_pixel)
-        for cell in outline:
-            var partition: int = cell_to_partition[cell]
-            var line = _spawn_line(line_child, 16.0, colors[partition])
-            var pos := map.to_global(map.map_to_local(cell))
-            line.add_point(pos - Vector2.RIGHT * 8.0)
-            line.add_point(pos + Vector2.RIGHT * 8.0)
+        for touched_partition in touched_partitions:
+            var color = colors[touched_partition]
+            var start_pos: Vector2i = touched_partitions[touched_partition][0]
+            var enter_pos: Vector2i = touched_partitions[touched_partition][1]
+
+            var outline := _trace(start_pos, enter_pos)
+            for cell in outline:
+                var line = _spawn_line(line_child, 16.0, color)
+                var pos := map.to_global(map.map_to_local(cell))
+                line.add_point(pos - Vector2.RIGHT * 8.0)
+                line.add_point(pos + Vector2.RIGHT * 8.0)
 
 
 func _trace(start: Vector2i, enter: Vector2i) -> Array[Vector2i]:
@@ -140,6 +132,32 @@ func _get_outline_outer_normal(tile_pos: Vector2i) -> Vector2i:
     if map.get_cell_tile_data(tile_pos + Vector2i.DOWN):
         normal += Vector2i.DOWN
     return normal
+
+func _get_partitions_touched_by_free_zone(pos: Vector2, cell_to_partition: Dictionary) -> Dictionary:
+    var tile_pos := map.local_to_map(map.to_local(pos))
+
+    var partitions := {}
+    var to_check := [[tile_pos, tile_pos]]
+    var checked := {}
+
+    while to_check.size() > 0:
+        var t = to_check.pop_back()
+        var curr_tile_pos: Vector2i = t[0]
+        if curr_tile_pos in checked:
+            continue
+        checked[curr_tile_pos] = true
+
+        var tile_data := map.get_cell_tile_data(curr_tile_pos)
+        if tile_data:
+            partitions[cell_to_partition[curr_tile_pos]] = [curr_tile_pos, t[1]]
+            continue
+
+        to_check.append([curr_tile_pos + Vector2i(-1, 0), curr_tile_pos])
+        to_check.append([curr_tile_pos + Vector2i(1, 0), curr_tile_pos])
+        to_check.append([curr_tile_pos + Vector2i(0, 1), curr_tile_pos])
+        to_check.append([curr_tile_pos + Vector2i(0, -1), curr_tile_pos])
+
+    return partitions
 
 func _draw_tile(tile_pos: Vector2i, color: Color) -> void:
     var line := _spawn_line(line_child, 16.0, color)
