@@ -15,6 +15,12 @@ extends Node
         for child in _polygons.get_children():
             _polygons.remove_child(child)
 
+@export var aaaaa: bool = false:
+    set(value):
+        aaaaa = false
+        var polygon := _polygons.get_child(0)
+        print(polygon)
+
 @export_group("References")
 @export var rendering: Node
 
@@ -37,10 +43,14 @@ var _partitions: Dictionary[int, Dictionary] = {}
 var _cell_to_partition: Dictionary[Vector2i, int] = {}
 
 func _ready() -> void:
+    # return
+    if Engine.is_editor_hint():
+        return
     _generate_zones()
     rendering.set_materials = true
 
 func _process(delta: float) -> void:
+    # return
     if not Engine.is_editor_hint() or (Engine.is_editor_hint() and update_stuff):
         var idx := -1
         for child in _lines.get_children():
@@ -51,7 +61,12 @@ func _process(delta: float) -> void:
                 # paaaa.reverse()
                 # var is_clock := Geometry2D.is_polygon_clockwise(child.points.duplicate()) or Geometry2D.is_polygon_clockwise(paaaa)
                 # if is_clock:
+#                 var arr := Array(child.points)
+#                 arr.sort_custom(_custom_sort)
                 _polygons.get_child(idx).polygon = child.points
+
+# func _custom_sort(a, b):
+#     return a.angle() < b.angle()
 
 func _generate_zones() -> void:
     for child in _lines.get_children():
@@ -71,37 +86,53 @@ func _generate_zones() -> void:
         var enter_pos: Vector2i = touched_partitions[touched_partition][1]
 
         var outline := _trace(start_pos, enter_pos)
-        # for i in lines_per_partition:
-        var line := WobblyLine2D.new()
-        _lines.add_child(line)
-        if Engine.is_editor_hint():
-            line.owner = get_tree().edited_scene_root
+        for i in lines_per_partition:
+            var line := WobblyLine2D.new()
+            _lines.add_child(line)
+            if Engine.is_editor_hint():
+                line.owner = get_tree().edited_scene_root
 
-        # Geometry2D
+            # Geometry2D
 
-        line.width = 2.0
-        line.modulate = Color.RED
-        line.normal_pushback_range = normal_pushback_range
-        line.point_wander_range = point_wander_range
-        line.point_wander_time_range = point_wander_time_range
-        line.point_wander_speed_range = point_wander_speed_range
-        line._info = []
-        line._info.resize(outline.size())
+            line.width = line_thickness
+            line.modulate = Color.RED
+            line.normal_pushback_range = normal_pushback_range
+            line.point_wander_range = point_wander_range
+            line.point_wander_time_range = point_wander_time_range
+            line.point_wander_speed_range = point_wander_speed_range
+            line._info = []
+            line._info.resize(outline.size())
 
-        var idx := -1
-        for cell in outline:
-            idx += 1
-            var cell_world_pos := _map.to_global(_map.map_to_local(cell))
-            line._info[idx] = {"base_pos": cell_world_pos, "normal": _get_outline_outer_normal(cell)}
+            var idx := -1
+            for cell in outline:
+                idx += 1
+                var cell_world_pos := _map.to_global(_map.map_to_local(cell))
+                line._info[idx] = {"base_pos": cell_world_pos, "normal": _get_outline_outer_normal(cell)}
         
-        line.init_wobblyness()
+            line.init_wobblyness()
 
-        var polygon := Polygon2D.new()
-        polygon.polygon = line.points
-        _polygons.add_child(polygon)
-        if Engine.is_editor_hint():
-            polygon.owner = get_tree().edited_scene_root
-        polygon.color = Color.from_rgba8(255, 0, 0, 1)
+            var polygon := Polygon2D.new()
+            polygon.polygon = line.points
+            _polygons.add_child(polygon)
+            if Engine.is_editor_hint():
+                polygon.owner = get_tree().edited_scene_root
+            polygon.color = Color.from_rgba8(255, 0, 0, 1)
+            # var pp := line.points.duplicate()
+            # var hull := Geometry2D.convex_hull(pp)
+            # # hull = Geometry2D.offset_polygon(hull.duplicate(), 40.0)[0]
+            # var ahull = Geometry2D.offset_polygon(hull.duplicate(), 400.0)
+            # print(ahull.size())
+            # hull = ahull[0]
+            # var bb := Geometry2D.clip_polygons(hull, pp)
+            # # var bb := Geometry2D.clip_polygons(pp, hull)
+            # for b in bb:
+            #     var polygon := Polygon2D.new()
+            #     polygon.polygon = b
+            #     _polygons.add_child(polygon)
+            #     if Engine.is_editor_hint():
+            #         polygon.owner = get_tree().edited_scene_root
+            #     polygon.color = Color.from_rgba8(0, 0, 255, 53)
+
 
 
 func _get_outline_outer_normal(tile_pos: Vector2i) -> Vector2i:
