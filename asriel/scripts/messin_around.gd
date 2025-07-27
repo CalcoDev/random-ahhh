@@ -22,8 +22,6 @@ extends Node
         print(polygon)
 
 @export_group("References")
-@export var rendering: Node
-
 @export var _map: TileMapLayer
 @export var _lines: Node
 @export var _polygons: Node
@@ -47,14 +45,13 @@ func _ready() -> void:
     if Engine.is_editor_hint():
         return
     _generate_zones()
-    rendering.set_materials = true
 
 func _process(delta: float) -> void:
     # return
     if not Engine.is_editor_hint() or (Engine.is_editor_hint() and update_stuff):
-        var idx := -1
+        # var idx := -1
         for child in _lines.get_children():
-            idx += 1
+            # idx += 1
             if child is WobblyLine2D:
                 child._process_wobblyness(delta)
                 # var paaaa = child.points.duplicate()
@@ -63,7 +60,7 @@ func _process(delta: float) -> void:
                 # if is_clock:
 #                 var arr := Array(child.points)
 #                 arr.sort_custom(_custom_sort)
-                _polygons.get_child(idx).polygon = child.points
+                # _polygons.get_child(idx).polygon = child.points
 
 # func _custom_sort(a, b):
 #     return a.angle() < b.angle()
@@ -92,8 +89,6 @@ func _generate_zones() -> void:
             if Engine.is_editor_hint():
                 line.owner = get_tree().edited_scene_root
 
-            # Geometry2D
-
             line.width = line_thickness
             line.modulate = Color.RED
             line.normal_pushback_range = normal_pushback_range
@@ -101,22 +96,64 @@ func _generate_zones() -> void:
             line.point_wander_time_range = point_wander_time_range
             line.point_wander_speed_range = point_wander_speed_range
             line._info = []
-            line._info.resize(outline.size())
 
-            var idx := -1
+            var idx := 0
             for cell in outline:
-                idx += 1
                 var cell_world_pos := _map.to_global(_map.map_to_local(cell))
-                line._info[idx] = {"base_pos": cell_world_pos, "normal": _get_outline_outer_normal(cell)}
-        
-            line.init_wobblyness()
+                var neighbour_count := 0
+                var normal := Vector2i.ZERO
+                var horizontal := false
 
-            var polygon := Polygon2D.new()
-            polygon.polygon = line.points
-            _polygons.add_child(polygon)
-            if Engine.is_editor_hint():
-                polygon.owner = get_tree().edited_scene_root
-            polygon.color = Color.from_rgba8(255, 0, 0, 1)
+                if _map.get_cell_tile_data(cell + Vector2i.LEFT):
+                    neighbour_count += 1
+                    normal += Vector2i.LEFT
+                    horizontal = true
+                if _map.get_cell_tile_data(cell + Vector2i.RIGHT):
+                    neighbour_count += 1
+                    normal += Vector2i.RIGHT
+                    horizontal = true
+                if _map.get_cell_tile_data(cell + Vector2i.UP):
+                    neighbour_count += 1
+                    normal += Vector2i.UP
+                if _map.get_cell_tile_data(cell + Vector2i.DOWN):
+                    neighbour_count += 1
+                    normal += Vector2i.DOWN
+                normal *= -1
+                
+                if neighbour_count == 1:
+                    var nn := Vector2i(Vector2(normal).rotated(PI/2).round())
+                    line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                    idx += 1
+                    line._info.append({"base_pos": cell_world_pos, "normal": -normal})
+                    idx += 1
+                    line._info.append({"base_pos": cell_world_pos, "normal": -nn})
+                    idx += 1
+                elif neighbour_count == 2 and normal == Vector2i.ZERO:
+                    if not horizontal:
+                        var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                        var nn := Vector2i.LEFT if diff.y > 0 else Vector2i.RIGHT
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        idx += 1
+                    else:
+                        var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                        var nn := Vector2i.DOWN if diff.x > 0 else Vector2i.UP
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        idx += 1
+                else:
+                    line._info.append({"base_pos": cell_world_pos, "normal": normal})
+                    idx += 1
+        
+
+            if i == 0:
+                line.init_wobblyness(false)
+                var polygon := Polygon2D.new()
+                polygon.polygon = line.points
+                _polygons.add_child(polygon)
+                if Engine.is_editor_hint():
+                    polygon.owner = get_tree().edited_scene_root
+                polygon.color = Color.from_rgba8(255, 0, 0, 1)
+            
+            line.init_wobblyness(true)
             # var pp := line.points.duplicate()
             # var hull := Geometry2D.convex_hull(pp)
             # # hull = Geometry2D.offset_polygon(hull.duplicate(), 40.0)[0]

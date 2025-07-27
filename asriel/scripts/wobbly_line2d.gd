@@ -12,9 +12,10 @@ func _process(delta: float) -> void:
     if not Engine.is_editor_hint():
         _process_wobblyness(delta)
 
-func init_wobblyness() -> void:
+func init_wobblyness(offset: bool) -> void:
+    clear_points()
     for info in _info:
-        add_point(info["base_pos"] + info["normal"] * _rand_range(normal_pushback_range))
+        add_point(info["base_pos"] + info["normal"] * (-2 + (int(offset) * _rand_range(normal_pushback_range))))
         info["wander_timer"] = 0.0
         info["wander_speed"] = _rand_range(point_wander_speed_range)
         info["target_pos"] = info["base_pos"]
