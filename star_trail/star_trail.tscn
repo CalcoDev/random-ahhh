@@ -1,0 +1,166 @@
+[gd_scene load_steps=20 format=3 uid="uid://c6kmmj1hyucd5"]
+
+[ext_resource type="Shader" uid="uid://vvqxuqjxw1d6" path="res://star_trail/shaders/velocity_debug_view.gdshader" id="1_teknk"]
+[ext_resource type="Shader" uid="uid://dlqc2l4n3qfn" path="res://star_trail/shaders/velocity_emitter.gdshader" id="2_7egne"]
+[ext_resource type="Script" uid="uid://c8q5ew5xfhxjy" path="res://star_trail/scripts/velocity_emitter.gd" id="2_mj8le"]
+[ext_resource type="Shader" uid="uid://ddj1qr2dokoyy" path="res://star_trail/shaders/velocity_blitter.gdshader" id="4_7egne"]
+[ext_resource type="Script" uid="uid://btdxg0wlnsjpu" path="res://star_trail/scripts/velocity_texture.gd" id="4_7h38h"]
+[ext_resource type="Shader" uid="uid://qreo4wcl5bcl" path="res://star_trail/shaders/velocity_texture_simulation.gdshader" id="5_7egne"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dtfqr"]
+viewport_path = NodePath("VelocityTexture/VelocityTextureB")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rhg1u"]
+shader = ExtResource("1_teknk")
+shader_parameter/u_obtained_tex = SubResource("ViewportTexture_dtfqr")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_teknk"]
+shader = ExtResource("2_7egne")
+shader_parameter/u_position_delta = Vector2(0, 0)
+
+[sub_resource type="Gradient" id="Gradient_7h38h"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7egne"]
+gradient = SubResource("Gradient_7h38h")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0, 0)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_teknk"]
+viewport_path = NodePath("VelocityTexture/VelocityTextureA")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_gye1v"]
+viewport_path = NodePath("VelocityTexture/TemporaryVelocityTexture")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7egne"]
+shader = ExtResource("4_7egne")
+shader_parameter/u_temp_velocity_tex = SubResource("ViewportTexture_gye1v")
+shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_teknk")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_rhg1u"]
+viewport_path = NodePath("VelocityTexture/VelocityBlitterPass")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dtfqr"]
+shader = ExtResource("5_7egne")
+shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_rhg1u")
+shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.00694444)
+shader_parameter/u_prev_velocity_tex_texel_size = Vector2(0.00416667, 0.00416667)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gye1v"]
+shader = ExtResource("5_7egne")
+shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_rhg1u")
+shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.0186354)
+shader_parameter/u_prev_velocity_tex_texel_size = Vector2(0.00416667, 0.00416667)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_q4248"]
+viewport_path = NodePath("VelocityTexture/TemporaryVelocityTexture")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5lc0u"]
+viewport_path = NodePath("VelocityTexture/VelocityBlitterPass")
+
+[node name="StarTrail" type="Node2D"]
+light_mask = 0
+visibility_layer = 1048575
+
+[node name="VelocityDebugView" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_rhg1u")
+custom_minimum_size = Vector2(240, 240)
+offset_left = 265.0
+offset_top = 5.0
+offset_right = 305.0
+offset_bottom = 45.0
+
+[node name="VelocityEmitter" type="Sprite2D" parent="."]
+light_mask = 0
+visibility_layer = 2
+material = SubResource("ShaderMaterial_teknk")
+position = Vector2(183, 96)
+texture = SubResource("GradientTexture2D_7egne")
+script = ExtResource("2_mj8le")
+max_speed = 1.0
+
+[node name="VelocityTexture" type="Node2D" parent="." node_paths=PackedStringArray("_debug_view")]
+light_mask = 0
+visibility_layer = 1048575
+script = ExtResource("4_7h38h")
+do_the_thing = true
+_debug_view = NodePath("../VelocityDebugView")
+max_delta_time = 0.034
+
+[node name="TemporaryVelocityTexture" type="SubViewport" parent="VelocityTexture"]
+unique_name_in_owner = true
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_cull_mask = 4293918722
+size = Vector2i(240, 240)
+
+[node name="VelocityBlitterPass" type="SubViewport" parent="VelocityTexture"]
+unique_name_in_owner = true
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_vertices_to_pixel = true
+canvas_cull_mask = 4293918721
+size = Vector2i(240, 240)
+
+[node name="ColorRect" type="ColorRect" parent="VelocityTexture/VelocityBlitterPass"]
+material = SubResource("ShaderMaterial_7egne")
+custom_minimum_size = Vector2(240, 240)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.498039, 0.498039, 0.498039, 0.498039)
+
+[node name="VelocityTextureA" type="SubViewport" parent="VelocityTexture"]
+unique_name_in_owner = true
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_cull_mask = 4293918721
+size = Vector2i(240, 240)
+
+[node name="ColorRect" type="ColorRect" parent="VelocityTexture/VelocityTextureA"]
+visible = false
+material = SubResource("ShaderMaterial_dtfqr")
+custom_minimum_size = Vector2(240, 240)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0)
+
+[node name="VelocityTextureB" type="SubViewport" parent="VelocityTexture"]
+unique_name_in_owner = true
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_cull_mask = 4293918721
+size = Vector2i(240, 240)
+
+[node name="ColorRect" type="ColorRect" parent="VelocityTexture/VelocityTextureB"]
+material = SubResource("ShaderMaterial_gye1v")
+custom_minimum_size = Vector2(240, 240)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0)
+
+[node name="temp vel debug" type="TextureRect" parent="."]
+offset_left = -301.0
+offset_top = 248.0
+offset_right = -261.0
+offset_bottom = 288.0
+texture = SubResource("ViewportTexture_q4248")
+
+[node name="blit pass" type="TextureRect" parent="."]
+offset_left = 11.0
+offset_top = 265.0
+offset_right = 51.0
+offset_bottom = 305.0
+texture = SubResource("ViewportTexture_5lc0u")
