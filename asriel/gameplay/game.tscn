@@ -1,0 +1,319 @@
+[gd_scene load_steps=3 format=4 uid="uid://bcrd510at1h0p"]
+
+[ext_resource type="Script" uid="uid://dvif8380i7lq0" path="res://asriel/scripts/messin_around.gd" id="1_4aiaw"]
+[ext_resource type="TileSet" uid="uid://bfp85infa4i42" path="res://asriel/resources/tilesets/tileset.tres" id="2_e1fnk"]
+
+[node name="Game" type="Node2D"]
+
+[node name="MessinAround" type="Node" parent="." node_paths=PackedStringArray("map", "line_child", "line_child2", "zones")]
+script = ExtResource("1_4aiaw")
+map = NodePath("../TileMapLayer")
+line_child = NodePath("../LineChild")
+line_child2 = NodePath("../LineChild2")
+zones = [NodePath("../Marker2D")]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAD///7/AAABAAAAAAD/////AAABAAAAAAD//wAAAAABAAAAAAD//wEAAAABAAAAAAD//wIAAAABAAAAAAD//wMAAAABAAAAAAD//wQAAAABAAAAAAD//wUAAAABAAAAAAD//wYAAAABAAAAAAD//wcAAAABAAAAAAD//wgAAAABAAAAAAD//wkAAAABAAAAAAD//woAAAABAAAAAAD//wsAAAABAAAAAAD//wwAAAABAAAAAAD//w0AAAABAAAAAAD//w4AAAABAAAAAAD//w8AAAABAAAAAAAAAP7/AAABAAAAAAAAAP//AAABAAAAAAAAAAAAAAABAAAAAAAAAAEAAAABAAAAAAAAAAIAAAABAAAAAAAAAAMAAAABAAAAAAAAAAQAAAABAAAAAAAAAAUAAAABAAAAAAAAAAYAAAABAAAAAAAAAAcAAAABAAAAAAAAAAgAAAABAAAAAAAAAAkAAAABAAAAAAAAAAoAAAABAAAAAAAAAAsAAAABAAAAAAAAAA8AAAABAAAAAAABAP7/AAABAAAAAAABAP//AAABAAAAAAABAAAAAAABAAAAAAABAAUAAAABAAAAAAABAAYAAAABAAAAAAABAAcAAAABAAAAAAABAAgAAAABAAAAAAABAAkAAAABAAAAAAABAAoAAAABAAAAAAABAAsAAAABAAAAAAABAA8AAAABAAAAAAACAP7/AAABAAAAAAACAP//AAABAAAAAAACAAcAAAABAAAAAAACAAgAAAABAAAAAAACAAkAAAABAAAAAAACAAoAAAABAAAAAAACAAsAAAABAAAAAAACAAwAAAABAAAAAAACAA0AAAABAAAAAAACAA4AAAABAAAAAAACAA8AAAABAAAAAAADAP7/AAABAAAAAAADAP//AAABAAAAAAADAA0AAAABAAAAAAADAA4AAAABAAAAAAADAA8AAAABAAAAAAAEAP7/AAABAAAAAAAEAP//AAABAAAAAAAEAA0AAAABAAAAAAAEAA4AAAABAAAAAAAEAA8AAAABAAAAAAAFAP7/AAABAAAAAAAFAP//AAABAAAAAAAFAAoAAAABAAAAAAAFAA4AAAABAAAAAAAFAA8AAAABAAAAAAAGAP7/AAABAAAAAAAGAP//AAABAAAAAAAGAAoAAAABAAAAAAAGAA4AAAABAAAAAAAGAA8AAAABAAAAAAAHAP7/AAABAAAAAAAHAP//AAABAAAAAAAHAAoAAAABAAAAAAAHAAsAAAABAAAAAAAHAA8AAAABAAAAAAAIAP7/AAABAAAAAAAIAP//AAABAAAAAAAIAAsAAAABAAAAAAAIAA4AAAABAAAAAAAIAA8AAAABAAAAAAAJAP7/AAABAAAAAAAJAP//AAABAAAAAAAJAAsAAAABAAAAAAAJAA4AAAABAAAAAAAJAA8AAAABAAAAAAAKAP7/AAABAAAAAAAKAP//AAABAAAAAAAKAAAAAAABAAAAAAAKAAQAAAABAAAAAAAKAAUAAAABAAAAAAAKAAYAAAABAAAAAAAKAAwAAAABAAAAAAAKAA4AAAABAAAAAAAKAA8AAAABAAAAAAALAP7/AAABAAAAAAALAP//AAABAAAAAAALAAAAAAABAAAAAAALAAEAAAABAAAAAAALAAIAAAABAAAAAAALAAMAAAABAAAAAAALAAQAAAABAAAAAAALAAYAAAABAAAAAAALAAwAAAABAAAAAAALAA4AAAABAAAAAAALAA8AAAABAAAAAAAMAP7/AAABAAAAAAAMAP//AAABAAAAAAAMAAAAAAABAAAAAAAMAAEAAAABAAAAAAAMAAIAAAABAAAAAAAMAAYAAAABAAAAAAAMAAwAAAABAAAAAAAMAA4AAAABAAAAAAAMAA8AAAABAAAAAAANAP7/AAABAAAAAAANAP//AAABAAAAAAANAAAAAAABAAAAAAANAAEAAAABAAAAAAANAAcAAAABAAAAAAANAAwAAAABAAAAAAANAA4AAAABAAAAAAANAA8AAAABAAAAAAAOAP7/AAABAAAAAAAOAP//AAABAAAAAAAOAAcAAAABAAAAAAAOAAgAAAABAAAAAAAOAAsAAAABAAAAAAAOAAwAAAABAAAAAAAOAA4AAAABAAAAAAAOAA8AAAABAAAAAAAPAP7/AAABAAAAAAAPAP//AAABAAAAAAAPAAgAAAABAAAAAAAPAAkAAAABAAAAAAAPAAoAAAABAAAAAAAPAA8AAAABAAAAAAAQAP7/AAABAAAAAAAQAP//AAABAAAAAAAQAAAAAAABAAAAAAAQAAEAAAABAAAAAAAQAAIAAAABAAAAAAAQAAMAAAABAAAAAAAQAAQAAAABAAAAAAAQAAUAAAABAAAAAAAQAAYAAAABAAAAAAAQAAcAAAABAAAAAAAQAAgAAAABAAAAAAAQAAkAAAABAAAAAAAQAAoAAAABAAAAAAAQAAsAAAABAAAAAAAQAAwAAAABAAAAAAAQAA0AAAABAAAAAAAQAA4AAAABAAAAAAAQAA8AAAABAAAAAAAGAAwAAAABAAAAAAAGAAsAAAABAAAAAAAFAAsAAAABAAAAAAAFAAwAAAABAAAAAAAFAA0AAAABAAAAAAAGAA0AAAABAAAAAAAHAA0AAAABAAAAAAAHAAwAAAABAAAAAAAIAAwAAAABAAAAAAAIAA0AAAABAAAAAAAJAA0AAAABAAAAAAAJAAwAAAABAAAAAAAKAA0AAAABAAAAAAALAA0AAAABAAAAAAAMAA0AAAABAAAAAAANAA0AAAABAAAAAAAOAA0AAAABAAAAAAAPAA0AAAABAAAAAAAPAAwAAAABAAAAAAAPAAsAAAABAAAAAAAPAA4AAAABAAAAAAAHAA4AAAABAAAAAAABAA0AAAABAAAAAAABAAwAAAABAAAAAAAAAAwAAAABAAAAAAAAAA0AAAABAAAAAAAAAA4AAAABAAAAAAABAA4AAAABAAAAAAAPAAMAAAABAAAAAAAPAAIAAAABAAAAAAAPAAEAAAABAAAAAAAPAAAAAAABAAAAAAAOAAAAAAABAAAAAAAOAAEAAAABAAAAAAAOAAIAAAABAAAAAAANAAIAAAABAAAAAAANAAMAAAABAAAAAAAMAAMAAAABAAAAAAAMAAQAAAABAAAAAAAMAAUAAAABAAAAAAALAAUAAAABAAAAAAANAAUAAAABAAAAAAANAAQAAAABAAAAAAAOAAQAAAABAAAAAAAOAAMAAAABAAAAAAAOAAUAAAABAAAAAAAOAAYAAAABAAAAAAANAAYAAAABAAAAAAAPAAYAAAABAAAAAAAPAAUAAAABAAAAAAAPAAQAAAABAAAAAAAPAAcAAAABAAAAAAAEAAoAAAABAAAAAAAEAAsAAAABAAAAAAAEAAwAAAABAAAAAAA=")
+tile_set = ExtResource("2_e1fnk")
+
+[node name="LineChild" type="Node2D" parent="."]
+
+[node name="@Line2D@95337" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(104, 168, 104, 153)
+width = 1.0
+
+[node name="@Line2D@95338" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(120, 168, 120, 153)
+width = 1.0
+
+[node name="@Line2D@95339" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(120, -8, 120, 7)
+width = 1.0
+
+[node name="@Line2D@95340" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(136, -8, 136, 7)
+width = 1.0
+
+[node name="@Line2D@95341" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(120, 168, 135, 168)
+width = 1.0
+
+[node name="@Line2D@95342" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(136, 184, 136, 169)
+width = 1.0
+
+[node name="@Line2D@95343" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(152, 184, 152, 169)
+width = 1.0
+
+[node name="@Line2D@95344" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 104, 153, 104)
+width = 1.0
+
+[node name="@Line2D@95345" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 88, 153, 88)
+width = 1.0
+
+[node name="@Line2D@95346" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 72, 153, 72)
+width = 1.0
+
+[node name="@Line2D@95347" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 8, 153, 8)
+width = 1.0
+
+[node name="@Line2D@95348" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(152, -8, 152, 7)
+width = 1.0
+
+[node name="@Line2D@95349" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(184, 24, 169, 24)
+width = 1.0
+
+[node name="@Line2D@95350" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 8, 168, 23)
+width = 1.0
+
+[node name="@Line2D@95351" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(184, 40, 169, 40)
+width = 1.0
+
+[node name="@Line2D@95352" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(184, 56, 169, 56)
+width = 1.0
+
+[node name="@Line2D@95353" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 72, 168, 57)
+width = 1.0
+
+[node name="@Line2D@95354" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 104, 168, 119)
+width = 1.0
+
+[node name="@Line2D@95355" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(152, 184, 167, 184)
+width = 1.0
+
+[node name="@Line2D@95356" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(168, 200, 168, 185)
+width = 1.0
+
+[node name="@Line2D@95357" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(184, 200, 184, 185)
+width = 1.0
+
+[node name="@Line2D@95358" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(184, 104, 184, 119)
+width = 1.0
+
+[node name="@Line2D@95359" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(216, 120, 201, 120)
+width = 1.0
+
+[node name="@Line2D@95360" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(200, 104, 200, 119)
+width = 1.0
+
+[node name="@Line2D@95361" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(200, 200, 200, 185)
+width = 1.0
+
+[node name="@Line2D@95362" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(232, 184, 217, 184)
+width = 1.0
+
+[node name="@Line2D@95363" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(216, 200, 216, 185)
+width = 1.0
+
+[node name="@Line2D@95364" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(232, 136, 217, 136)
+width = 1.0
+
+[node name="@Line2D@95365" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(216, 120, 216, 135)
+width = 1.0
+
+[node name="@Line2D@95366" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(248, 152, 233, 152)
+width = 1.0
+
+[node name="@Line2D@95367" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(232, 136, 232, 151)
+width = 1.0
+
+[node name="@Line2D@95368" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(248, 168, 233, 168)
+width = 1.0
+
+[node name="@Line2D@95369" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(232, 184, 232, 169)
+width = 1.0
+
+[node name="@Line2D@95370" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(104, -8, 104, 7)
+width = 1.0
+
+[node name="@Line2D@95371" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(88, 168, 88, 153)
+width = 1.0
+
+[node name="@Line2D@95372" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(72, 168, 72, 153)
+width = 1.0
+
+[node name="@Line2D@95373" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(72, -8, 72, 7)
+width = 1.0
+
+[node name="@Line2D@95374" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(88, -8, 88, 7)
+width = 1.0
+
+[node name="@Line2D@95375" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(56, -8, 56, 7)
+width = 1.0
+
+[node name="@Line2D@95376" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 136, 55, 136)
+width = 1.0
+
+[node name="@Line2D@95377" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 152, 55, 152)
+width = 1.0
+
+[node name="@Line2D@95378" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 168, 55, 168)
+width = 1.0
+
+[node name="@Line2D@95379" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(72, 168, 57, 168)
+width = 1.0
+
+[node name="@Line2D@95380" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 184, 55, 184)
+width = 1.0
+
+[node name="@Line2D@95381" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(72, 184, 57, 184)
+width = 1.0
+
+[node name="@Line2D@95382" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 200, 55, 200)
+width = 1.0
+
+[node name="@Line2D@95383" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(72, 200, 57, 200)
+width = 1.0
+
+[node name="@Line2D@95384" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(56, 216, 56, 201)
+width = 1.0
+
+[node name="@Line2D@95385" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(24, 104, 39, 104)
+width = 1.0
+
+[node name="@Line2D@95386" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, 120, 40, 105)
+width = 1.0
+
+[node name="@Line2D@95387" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(24, 88, 39, 88)
+width = 1.0
+
+[node name="@Line2D@95388" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(24, 8, 39, 8)
+width = 1.0
+
+[node name="@Line2D@95389" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(40, -8, 40, 7)
+width = 1.0
+
+[node name="@Line2D@95390" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(8, 24, 23, 24)
+width = 1.0
+
+[node name="@Line2D@95391" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(24, 8, 24, 23)
+width = 1.0
+
+[node name="@Line2D@95392" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(8, 40, 23, 40)
+width = 1.0
+
+[node name="@Line2D@95393" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(8, 56, 23, 56)
+width = 1.0
+
+[node name="@Line2D@95394" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(8, 72, 23, 72)
+width = 1.0
+
+[node name="@Line2D@95395" type="Line2D" parent="LineChild"]
+modulate = Color(1, 0, 0, 1)
+points = PackedVector2Array(24, 88, 24, 73)
+width = 1.0
+
+[node name="LineChild2" type="Node2D" parent="."]
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(109, 79)
