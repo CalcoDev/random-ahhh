@@ -17,303 +17,499 @@ tile_map_data = PackedByteArray("AAD///7/AAABAAAAAAD/////AAABAAAAAAD//wAAAAABAAA
 tile_set = ExtResource("2_e1fnk")
 
 [node name="LineChild" type="Node2D" parent="."]
+visible = false
 
-[node name="@Line2D@95337" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33709" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(104, 168, 104, 153)
-width = 1.0
+points = PackedVector2Array(101, -8, 107, -8)
+width = 2.0
 
-[node name="@Line2D@95338" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33710" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(120, 168, 120, 153)
-width = 1.0
+points = PackedVector2Array(117, -8, 123, -8)
+width = 2.0
 
-[node name="@Line2D@95339" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33711" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(120, -8, 120, 7)
-width = 1.0
+points = PackedVector2Array(117, 168, 123, 168)
+width = 2.0
 
-[node name="@Line2D@95340" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33712" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(136, -8, 136, 7)
-width = 1.0
+points = PackedVector2Array(133, -8, 139, -8)
+width = 2.0
 
-[node name="@Line2D@95341" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33713" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(120, 168, 135, 168)
-width = 1.0
+points = PackedVector2Array(149, -8, 155, -8)
+width = 2.0
 
-[node name="@Line2D@95342" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33714" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(136, 184, 136, 169)
-width = 1.0
+points = PackedVector2Array(149, 184, 155, 184)
+width = 2.0
 
-[node name="@Line2D@95343" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33715" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(152, 184, 152, 169)
-width = 1.0
+points = PackedVector2Array(165, 104, 171, 104)
+width = 2.0
 
-[node name="@Line2D@95344" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33716" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 104, 153, 104)
-width = 1.0
+points = PackedVector2Array(181, 104, 187, 104)
+width = 2.0
 
-[node name="@Line2D@95345" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33717" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 88, 153, 88)
-width = 1.0
+points = PackedVector2Array(181, 200, 187, 200)
+width = 2.0
 
-[node name="@Line2D@95346" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33718" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 72, 153, 72)
-width = 1.0
+points = PackedVector2Array(197, 104, 203, 104)
+width = 2.0
 
-[node name="@Line2D@95347" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33719" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 8, 153, 8)
-width = 1.0
+points = PackedVector2Array(213, 120, 219, 120)
+width = 2.0
 
-[node name="@Line2D@95348" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33720" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(152, -8, 152, 7)
-width = 1.0
+points = PackedVector2Array(213, 200, 219, 200)
+width = 2.0
 
-[node name="@Line2D@95349" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33721" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(184, 24, 169, 24)
-width = 1.0
+points = PackedVector2Array(229, 184, 235, 184)
+width = 2.0
 
-[node name="@Line2D@95350" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33722" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 8, 168, 23)
-width = 1.0
+points = PackedVector2Array(229, 136, 235, 136)
+width = 2.0
 
-[node name="@Line2D@95351" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33723" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(184, 40, 169, 40)
-width = 1.0
+points = PackedVector2Array(245, 152, 251, 152)
+width = 2.0
 
-[node name="@Line2D@95352" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33724" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(184, 56, 169, 56)
-width = 1.0
+points = PackedVector2Array(245, 168, 251, 168)
+width = 2.0
 
-[node name="@Line2D@95353" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33725" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 72, 168, 57)
-width = 1.0
+points = PackedVector2Array(197, 200, 203, 200)
+width = 2.0
 
-[node name="@Line2D@95354" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33726" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 104, 168, 119)
-width = 1.0
+points = PackedVector2Array(165, 200, 171, 200)
+width = 2.0
 
-[node name="@Line2D@95355" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33727" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(152, 184, 167, 184)
-width = 1.0
+points = PackedVector2Array(133, 184, 139, 184)
+width = 2.0
 
-[node name="@Line2D@95356" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33728" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(168, 200, 168, 185)
-width = 1.0
+points = PackedVector2Array(165, 88, 171, 88)
+width = 2.0
 
-[node name="@Line2D@95357" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33729" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(184, 200, 184, 185)
-width = 1.0
+points = PackedVector2Array(165, 72, 171, 72)
+width = 2.0
 
-[node name="@Line2D@95358" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33730" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(184, 104, 184, 119)
-width = 1.0
+points = PackedVector2Array(165, 8, 171, 8)
+width = 2.0
 
-[node name="@Line2D@95359" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33731" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(216, 120, 201, 120)
-width = 1.0
+points = PackedVector2Array(181, 24, 187, 24)
+width = 2.0
 
-[node name="@Line2D@95360" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33732" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(200, 104, 200, 119)
-width = 1.0
+points = PackedVector2Array(181, 40, 187, 40)
+width = 2.0
 
-[node name="@Line2D@95361" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33733" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(200, 200, 200, 185)
-width = 1.0
+points = PackedVector2Array(181, 56, 187, 56)
+width = 2.0
 
-[node name="@Line2D@95362" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33734" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(232, 184, 217, 184)
-width = 1.0
+points = PackedVector2Array(85, -8, 91, -8)
+width = 2.0
 
-[node name="@Line2D@95363" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33735" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(216, 200, 216, 185)
-width = 1.0
+points = PackedVector2Array(69, -8, 75, -8)
+width = 2.0
 
-[node name="@Line2D@95364" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33736" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(232, 136, 217, 136)
-width = 1.0
+points = PackedVector2Array(69, 168, 75, 168)
+width = 2.0
 
-[node name="@Line2D@95365" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33737" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(216, 120, 216, 135)
-width = 1.0
+points = PackedVector2Array(85, 168, 91, 168)
+width = 2.0
 
-[node name="@Line2D@95366" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33738" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(248, 152, 233, 152)
-width = 1.0
+points = PackedVector2Array(53, -8, 59, -8)
+width = 2.0
 
-[node name="@Line2D@95367" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33739" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(232, 136, 232, 151)
-width = 1.0
+points = PackedVector2Array(37, -8, 43, -8)
+width = 2.0
 
-[node name="@Line2D@95368" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33740" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(248, 168, 233, 168)
-width = 1.0
+points = PackedVector2Array(37, 120, 43, 120)
+width = 2.0
 
-[node name="@Line2D@95369" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33741" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(232, 184, 232, 169)
-width = 1.0
+points = PackedVector2Array(21, 104, 27, 104)
+width = 2.0
 
-[node name="@Line2D@95370" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33742" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(104, -8, 104, 7)
-width = 1.0
+points = PackedVector2Array(21, 88, 27, 88)
+width = 2.0
 
-[node name="@Line2D@95371" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33743" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(88, 168, 88, 153)
-width = 1.0
+points = PackedVector2Array(21, 8, 27, 8)
+width = 2.0
 
-[node name="@Line2D@95372" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33744" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(72, 168, 72, 153)
-width = 1.0
+points = PackedVector2Array(5, 24, 11, 24)
+width = 2.0
 
-[node name="@Line2D@95373" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33745" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(72, -8, 72, 7)
-width = 1.0
+points = PackedVector2Array(5, 40, 11, 40)
+width = 2.0
 
-[node name="@Line2D@95374" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33746" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(88, -8, 88, 7)
-width = 1.0
+points = PackedVector2Array(5, 56, 11, 56)
+width = 2.0
 
-[node name="@Line2D@95375" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33747" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(56, -8, 56, 7)
-width = 1.0
+points = PackedVector2Array(5, 72, 11, 72)
+width = 2.0
 
-[node name="@Line2D@95376" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33748" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 136, 55, 136)
-width = 1.0
+points = PackedVector2Array(37, 136, 43, 136)
+width = 2.0
 
-[node name="@Line2D@95377" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33749" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 152, 55, 152)
-width = 1.0
+points = PackedVector2Array(53, 216, 59, 216)
+width = 2.0
 
-[node name="@Line2D@95378" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33750" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 168, 55, 168)
-width = 1.0
+points = PackedVector2Array(69, 200, 75, 200)
+width = 2.0
 
-[node name="@Line2D@95379" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33751" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(72, 168, 57, 168)
-width = 1.0
+points = PackedVector2Array(37, 200, 43, 200)
+width = 2.0
 
-[node name="@Line2D@95380" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33752" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 184, 55, 184)
-width = 1.0
+points = PackedVector2Array(69, 184, 75, 184)
+width = 2.0
 
-[node name="@Line2D@95381" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33753" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(72, 184, 57, 184)
-width = 1.0
+points = PackedVector2Array(37, 184, 43, 184)
+width = 2.0
 
-[node name="@Line2D@95382" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33754" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 200, 55, 200)
-width = 1.0
+points = PackedVector2Array(37, 168, 43, 168)
+width = 2.0
 
-[node name="@Line2D@95383" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33755" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(72, 200, 57, 200)
-width = 1.0
+points = PackedVector2Array(37, 152, 43, 152)
+width = 2.0
 
-[node name="@Line2D@95384" type="Line2D" parent="LineChild"]
+[node name="@Line2D@33756" type="Line2D" parent="LineChild"]
 modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(56, 216, 56, 201)
-width = 1.0
-
-[node name="@Line2D@95385" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(24, 104, 39, 104)
-width = 1.0
-
-[node name="@Line2D@95386" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, 120, 40, 105)
-width = 1.0
-
-[node name="@Line2D@95387" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(24, 88, 39, 88)
-width = 1.0
-
-[node name="@Line2D@95388" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(24, 8, 39, 8)
-width = 1.0
-
-[node name="@Line2D@95389" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(40, -8, 40, 7)
-width = 1.0
-
-[node name="@Line2D@95390" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(8, 24, 23, 24)
-width = 1.0
-
-[node name="@Line2D@95391" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(24, 8, 24, 23)
-width = 1.0
-
-[node name="@Line2D@95392" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(8, 40, 23, 40)
-width = 1.0
-
-[node name="@Line2D@95393" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(8, 56, 23, 56)
-width = 1.0
-
-[node name="@Line2D@95394" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(8, 72, 23, 72)
-width = 1.0
-
-[node name="@Line2D@95395" type="Line2D" parent="LineChild"]
-modulate = Color(1, 0, 0, 1)
-points = PackedVector2Array(24, 88, 24, 73)
-width = 1.0
+points = PackedVector2Array(101, 168, 107, 168)
+width = 2.0
 
 [node name="LineChild2" type="Node2D" parent="."]
+
+[node name="@Line2D@33757" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0, 1)
+points = PackedVector2Array(240, 168, 256, 168)
+width = 16.0
+
+[node name="@Line2D@33758" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.0196078, 1)
+points = PackedVector2Array(240, 152, 256, 152)
+width = 16.0
+
+[node name="@Line2D@33759" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.0392157, 1)
+points = PackedVector2Array(224, 136, 240, 136)
+width = 16.0
+
+[node name="@Line2D@33760" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.0588235, 1)
+points = PackedVector2Array(208, 120, 224, 120)
+width = 16.0
+
+[node name="@Line2D@33761" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.0784314, 1)
+points = PackedVector2Array(192, 104, 208, 104)
+width = 16.0
+
+[node name="@Line2D@33762" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.0980392, 1)
+points = PackedVector2Array(176, 104, 192, 104)
+width = 16.0
+
+[node name="@Line2D@33763" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.117647, 1)
+points = PackedVector2Array(160, 104, 176, 104)
+width = 16.0
+
+[node name="@Line2D@33764" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.137255, 1)
+points = PackedVector2Array(160, 104, 176, 104)
+width = 16.0
+
+[node name="@Line2D@33765" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.156863, 1)
+points = PackedVector2Array(160, 88, 176, 88)
+width = 16.0
+
+[node name="@Line2D@33766" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.176471, 1)
+points = PackedVector2Array(160, 72, 176, 72)
+width = 16.0
+
+[node name="@Line2D@33767" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.196078, 1)
+points = PackedVector2Array(176, 56, 192, 56)
+width = 16.0
+
+[node name="@Line2D@33768" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.215686, 1)
+points = PackedVector2Array(176, 40, 192, 40)
+width = 16.0
+
+[node name="@Line2D@33769" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.235294, 1)
+points = PackedVector2Array(176, 24, 192, 24)
+width = 16.0
+
+[node name="@Line2D@33770" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.254902, 1)
+points = PackedVector2Array(160, 8, 176, 8)
+width = 16.0
+
+[node name="@Line2D@33771" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.27451, 1)
+points = PackedVector2Array(144, -8, 160, -8)
+width = 16.0
+
+[node name="@Line2D@33772" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.294118, 1)
+points = PackedVector2Array(128, -8, 144, -8)
+width = 16.0
+
+[node name="@Line2D@33773" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.313726, 1)
+points = PackedVector2Array(112, -8, 128, -8)
+width = 16.0
+
+[node name="@Line2D@33774" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.333333, 1)
+points = PackedVector2Array(96, -8, 112, -8)
+width = 16.0
+
+[node name="@Line2D@33775" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.352941, 1)
+points = PackedVector2Array(80, -8, 96, -8)
+width = 16.0
+
+[node name="@Line2D@33776" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.372549, 1)
+points = PackedVector2Array(64, -8, 80, -8)
+width = 16.0
+
+[node name="@Line2D@33777" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.392157, 1)
+points = PackedVector2Array(48, -8, 64, -8)
+width = 16.0
+
+[node name="@Line2D@33778" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.411765, 1)
+points = PackedVector2Array(32, -8, 48, -8)
+width = 16.0
+
+[node name="@Line2D@33779" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.431373, 1)
+points = PackedVector2Array(16, 8, 32, 8)
+width = 16.0
+
+[node name="@Line2D@33780" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.45098, 1)
+points = PackedVector2Array(0, 24, 16, 24)
+width = 16.0
+
+[node name="@Line2D@33781" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.470588, 1)
+points = PackedVector2Array(0, 40, 16, 40)
+width = 16.0
+
+[node name="@Line2D@33782" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.490196, 1)
+points = PackedVector2Array(0, 56, 16, 56)
+width = 16.0
+
+[node name="@Line2D@33783" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.509804, 1)
+points = PackedVector2Array(0, 72, 16, 72)
+width = 16.0
+
+[node name="@Line2D@33784" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.529412, 1)
+points = PackedVector2Array(16, 88, 32, 88)
+width = 16.0
+
+[node name="@Line2D@33785" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.54902, 1)
+points = PackedVector2Array(16, 104, 32, 104)
+width = 16.0
+
+[node name="@Line2D@33786" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.568627, 1)
+points = PackedVector2Array(32, 120, 48, 120)
+width = 16.0
+
+[node name="@Line2D@33787" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.588235, 1)
+points = PackedVector2Array(32, 136, 48, 136)
+width = 16.0
+
+[node name="@Line2D@33788" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.607843, 1)
+points = PackedVector2Array(32, 152, 48, 152)
+width = 16.0
+
+[node name="@Line2D@33789" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.627451, 1)
+points = PackedVector2Array(32, 168, 48, 168)
+width = 16.0
+
+[node name="@Line2D@33790" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.647059, 1)
+points = PackedVector2Array(32, 184, 48, 184)
+width = 16.0
+
+[node name="@Line2D@33791" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.666667, 1)
+points = PackedVector2Array(32, 200, 48, 200)
+width = 16.0
+
+[node name="@Line2D@33792" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.686275, 1)
+points = PackedVector2Array(48, 216, 64, 216)
+width = 16.0
+
+[node name="@Line2D@33793" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.705882, 1)
+points = PackedVector2Array(64, 200, 80, 200)
+width = 16.0
+
+[node name="@Line2D@33794" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.72549, 1)
+points = PackedVector2Array(64, 184, 80, 184)
+width = 16.0
+
+[node name="@Line2D@33795" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.745098, 1)
+points = PackedVector2Array(64, 168, 80, 168)
+width = 16.0
+
+[node name="@Line2D@33796" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.764706, 1)
+points = PackedVector2Array(64, 168, 80, 168)
+width = 16.0
+
+[node name="@Line2D@33797" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.784314, 1)
+points = PackedVector2Array(80, 168, 96, 168)
+width = 16.0
+
+[node name="@Line2D@33798" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.803922, 1)
+points = PackedVector2Array(96, 168, 112, 168)
+width = 16.0
+
+[node name="@Line2D@33799" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.823529, 1)
+points = PackedVector2Array(112, 168, 128, 168)
+width = 16.0
+
+[node name="@Line2D@33800" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.843137, 1)
+points = PackedVector2Array(128, 184, 144, 184)
+width = 16.0
+
+[node name="@Line2D@33801" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.862745, 1)
+points = PackedVector2Array(144, 184, 160, 184)
+width = 16.0
+
+[node name="@Line2D@33802" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.882353, 1)
+points = PackedVector2Array(160, 200, 176, 200)
+width = 16.0
+
+[node name="@Line2D@33803" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.901961, 1)
+points = PackedVector2Array(176, 200, 192, 200)
+width = 16.0
+
+[node name="@Line2D@33804" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.921569, 1)
+points = PackedVector2Array(192, 200, 208, 200)
+width = 16.0
+
+[node name="@Line2D@33805" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.941176, 1)
+points = PackedVector2Array(208, 200, 224, 200)
+width = 16.0
+
+[node name="@Line2D@33806" type="Line2D" parent="LineChild2"]
+modulate = Color(0.501961, 0, 0.960784, 1)
+points = PackedVector2Array(224, 184, 240, 184)
+width = 16.0
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(109, 79)

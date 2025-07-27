@@ -48,169 +48,95 @@ func _generate_zones() -> void:
         line_child2.remove_child(child)
 
     for marker in zones:
-        var outlines := _fill_zone(marker.global_position)
+        var outline := _generate_zone_outline(marker.global_position)
+        for tile_pos in outline:
+            var global_pos := map.to_global(map.map_to_local(tile_pos))
+            var line := _spawn_line(line_child, 2.0, Color.RED)
+            line.add_point(global_pos - Vector2.RIGHT * 3)
+            line.add_point(global_pos + Vector2.RIGHT * 3)
 
-        var dirs_to_index: Dictionary[String, int] = {"left": 0, "right": 1, "down": 2, "up": 3}
-        var dirs: Array[String] = ["left", "right", "down", "up"]
-        var normals: Array[Vector2i] = [
-            Vector2i(-1, 0), Vector2i(1, 0),
-            Vector2i(0, 1), Vector2i(0, -1), 
-        ]
-        var parallels: Array[Vector2i] = [
-            Vector2i(0, 1), Vector2i(0, 1),
-            Vector2(1, 0), Vector2i(1, 0)
-        ]
+        var start_pos: Vector2i = outline.keys().pick_random()
+        var ordered_outline = _generate_ordered_outline(outline, start_pos)
+        for i in ordered_outline.size():
+            var tile_pos: Vector2i = ordered_outline[i]
+            var line := _spawn_line(line_child2, 16.0, Color.from_rgba8(128, 0, i * 5, 255))
+            var global_pos := map.to_global(map.map_to_local(tile_pos))
+            line.add_point(global_pos - Vector2.RIGHT * 8)
+            line.add_point(global_pos + Vector2.RIGHT * 8)
 
-        var order = {
-            "up": "right",
-            "right": "down",
-            "down": "left",
-            "left": "up"
-        }
+func _generate_ordered_outline(outline: Dictionary, start_pos: Vector2i) -> Array:
+    var tiles := []
 
-        var points := []
-        if true:
-            var o := outlines.duplicate()
-            var cell: Vector2i = o.keys()[0]
-            _generate_path(cell, o, points)
-            print(points)
-            # while true:
-            #     for i in 4:
-            #         var dir := dirs[i]
-            #         if cell in o and o[cell][dir]:
-            #             var go_dir_str: String = order[dir]
-            #             var go_dir := normals[dirs_to_index[go_dir_str]]
-            #             while cell + go_dir in o:
-            #                 cell += go_dir
+    var og_start := start_pos
 
+    var failed_count := 0
+    while failed_count < 4:
+        failed_count = 0
+        for d in [Vector2i.UP, Vector2i.LEFT, Vector2i.DOWN, Vector2i.RIGHT]:
+            og_start = start_pos
+            start_pos = _ordered_outline_4d_yeet(tiles, outline, start_pos, d)
+            failed_count += int(start_pos == og_start)
 
-        # generate normal lines ahhh
-        for cell in outlines:
-            for i in 4:
-                var dir := dirs[i]
-                if outlines[cell][dir]:
-                    var line := Line2D.new()
-                    line_child.add_child(line)
-                    line.width = 1.0
-                    line.modulate = Color.RED
-                    if Engine.is_editor_hint():
-                        line.owner = get_tree().edited_scene_root
-                    var global_cell_pos := map.to_global(map.map_to_local(cell))
-                    var normal_dir := normals[i]
-                    line.add_point(global_cell_pos + normal_dir * 16.0)
-                    line.add_point(global_cell_pos + normal_dir * 1.0)
+    if tiles.size() == 0 and og_start == start_pos:
+        tiles.append(start_pos)
+        outline.erase(start_pos)
+    
+    _ordered_outline_8d_yeet(tiles, outline, start_pos, Vector2i.LEFT + Vector2i.UP)
+    _ordered_outline_8d_yeet(tiles, outline, start_pos, Vector2i.LEFT + Vector2i.DOWN)
+    _ordered_outline_8d_yeet(tiles, outline, start_pos, Vector2i.RIGHT + Vector2i.UP)
+    _ordered_outline_8d_yeet(tiles, outline, start_pos, Vector2i.RIGHT + Vector2i.DOWN)
+    
+    return tiles
 
-                    # points[global_cell_pos + normal_dir * 16.0] = true
-        
-        # var cell: Vector2i = outlines.keys()[0]
+func _ordered_outline_4d_yeet(tiles: Array, outline: Dictionary, start_pos: Vector2i, dir: Vector2i) -> Vector2i:
+    if start_pos + dir in outline:
+        # print("Marking ", start_pos)
+        tiles.append(start_pos)
+        outline.erase(start_pos)
+        while start_pos + dir in outline:
+            start_pos += dir
+            # print("Marking ", start_pos)
+            tiles.append(start_pos)
+            outline.erase(start_pos)
+    return start_pos
 
+func _ordered_outline_8d_yeet(tiles: Array, outline: Dictionary, start_pos: Vector2i, dir: Vector2i) -> void:
+    if start_pos + dir in outline:
+        var gen_outline := _generate_ordered_outline(outline, start_pos + dir)
+        tiles.append_array(gen_outline)
 
-        # var line := Line2D.new()
-        # line_child2.add_child(line)
-        # line.width = 1.0
-        # line.modulate = Color.DARK_BLUE
-        # if Engine.is_editor_hint():
-        #     line.owner = get_tree().edited_scene_root
-        # for point in points:
-        #     line.add_point(point)
+func _generate_zone_outline(seed_pos: Vector2) -> Dictionary:
+    var seed_tile_pos := map.local_to_map(map.to_local(seed_pos))
 
-        # generate big fricking bara transversala
-        # var steps := 0
-        # while outlines.size() > 0 and steps < 400:
-        #     steps += 1
-        #     var cell: Vector2i = outlines.keys().pick_random()
+    var outline := {}
 
-        #     # var ddirs := dirs.duplicate()
-        #     # var dir := ""
-        #     # while ddirs.size() > 0:
-        #     #     dir = ddirs.pop_back()
-        #     #     if not outlines[cell][dir]:
-        #     #         continue
-        #     for dir in dirs:
-        #         if cell in outlines and outlines[cell][dir]:
-        #             var perp_dir := parallels[dirs_to_index[dir]]
+    var to_check := [seed_tile_pos]
+    var checked := {}
 
-        #             var start := cell
-        #             var end := start
-        #             while (end + perp_dir) in outlines:
-        #                 outlines[end + perp_dir]["sum"] -= 1
-        #                 if outlines[end + perp_dir]["sum"] <= 0:
-        #                     outlines.erase(end + perp_dir)
-        #                 end += perp_dir
-        #             # outlines[end]["sum"] -= 1
-        #             # if outlines[end]["sum"] <= 0:
-        #             #     outlines.erase(end)
-        #             while (start - perp_dir) in outlines:
-        #                 outlines[start - perp_dir]["sum"] -= 1
-        #                 if outlines[start - perp_dir]["sum"] <= 0:
-        #                     outlines.erase(start - perp_dir)
-        #                 start -= perp_dir
-        #             # outlines[start]["sum"] -= 1
-        #             # if outlines[start]["sum"] <= 0:
-        #             #     outlines.erase(start)
-        #             print(cell, " ", dir, " Line finished: ", start, " ", end)
+    while to_check.size() > 0:
+        var tile_pos: Vector2i = to_check.pop_back()
 
-        #             var normal_dir := normals[dirs_to_index[dir]]
-
-        #             var line := Line2D.new()
-        #             line_child2.add_child(line)
-        #             line.width = 1.0
-        #             line.modulate = Color.BLACK
-        #             if Engine.is_editor_hint():
-        #                 line.owner = get_tree().edited_scene_root
-                    
-        #             start = map.to_global(map.map_to_local(start)) + normal_dir * 12.0
-        #             end = map.to_global(map.map_to_local(end)) + normal_dir * 12.0
-
-        #             line.add_point(start)
-        #             line.add_point(end)
-
-        #     outlines[cell]["sum"] -= 1
-        #     if outlines[cell]["sum"] <= 0:
-        #         outlines.erase(cell)
-
-
-func _fill_zone(global_pos: Vector2) -> Dictionary:
-    var local_pos := map.to_local(global_pos)
-    var tile_pos := map.local_to_map(local_pos)
-    var tiles: Array[Vector2i] = [tile_pos]
-
-    var outlines: Dictionary = {}
-    var checked: Dictionary[Vector2i, bool] = {}
-
-    while tiles.size() > 0:
-        var tpos: Vector2i = tiles.pop_back()
-        var tile_data := map.get_cell_tile_data(tpos)
-        if tile_data  != null or tpos in checked:
+        if tile_pos in checked:
             continue
-        checked[tpos] = true
-        var ttpos := Vector2i.ZERO 
-        var left := false
-        var right := false
-        var up := false
-        var down := false
-        ttpos = tpos + Vector2i(-1, 0)
-        if map.get_cell_tile_data(ttpos) != null:
-            left = true
-        else:
-            tiles.append(ttpos)
-        ttpos = tpos + Vector2i(1, 0)
-        if map.get_cell_tile_data(ttpos) != null:
-            right = true
-        else:
-            tiles.append(ttpos)
-        ttpos = tpos + Vector2i(0, -1)
-        if map.get_cell_tile_data(ttpos) != null:
-            up = true
-        else:
-            tiles.append(ttpos)
-        ttpos = tpos + Vector2i(0, 1)
-        if map.get_cell_tile_data(ttpos) != null:
-            down = true
-        else:
-            tiles.append(ttpos)
-        if left or right or up or down:
-            var sum := int(left) + int(right) + int(up) + int(down)
-            outlines[tpos] = {"left": left, "right": right, "down": down, "up": up, "sum": sum}
-        
-    return outlines
+        checked[tile_pos] = true
+
+        var tile_data := map.get_cell_tile_data(tile_pos)
+        if tile_data:
+            outline[tile_pos] = {}
+            continue
+
+        to_check.append(tile_pos + Vector2i(-1, 0))
+        to_check.append(tile_pos + Vector2i(1, 0))
+        to_check.append(tile_pos + Vector2i(0, 1))
+        to_check.append(tile_pos + Vector2i(0, -1))
+
+    return outline
+
+func _spawn_line(parent: Node, width: float, color: Color) -> Line2D:
+    var line := Line2D.new()
+    parent.add_child(line)
+    if Engine.is_editor_hint():
+        line.owner = get_tree().edited_scene_root
+    line.width = width
+    line.modulate = color
+    return line
