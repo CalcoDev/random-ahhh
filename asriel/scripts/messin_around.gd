@@ -7,39 +7,15 @@ extends Node
 
 @export var zones: Array[Marker2D]
 
+# @export var do_the_wobble
+
 @export var generate_zones: bool = false:
     set(value):
         generate_zones = false
         _generate_zones()
 
-func _generate_path(cell: Vector2i, outline: Dictionary, points: Array) -> void:
-    var dirs_to_index: Dictionary[String, int] = {"left": 0, "right": 1, "down": 2, "up": 3}
-    var dirs: Array[String] = ["left", "right", "down", "up"]
-    var normals: Array[Vector2i] = [
-        Vector2i(-1, 0), Vector2i(1, 0),
-        Vector2i(0, 1), Vector2i(0, -1), 
-    ]
-    var order = {
-        "up": "right",
-        "right": "down",
-        "down": "left",
-        "left": "up"
-    }
-
-    print("gen path: ", cell)
-    var ogcell := cell
-    for i in 4:
-        var dir := dirs[i]
-        if cell in outline and outline[cell][dir]:
-            var go_dir_str: String = order[dir]
-            var go_dir := normals[dirs_to_index[go_dir_str]]
-            while cell + go_dir in outline:
-                points.append(cell)
-                outline.erase(cell)
-                cell += go_dir
-            outline[cell][dir] = false
-            _generate_path(cell, outline, points)
-    outline.erase(ogcell)
+func _process(delta: float) -> void:
+    pass
 
 func _generate_zones() -> void:
     for child in line_child.get_children():
@@ -47,22 +23,32 @@ func _generate_zones() -> void:
     for child in line_child2.get_children():
         line_child2.remove_child(child)
 
-    for marker in zones:
-        var outline := _generate_zone_outline(marker.global_position)
-        for tile_pos in outline:
-            var global_pos := map.to_global(map.map_to_local(tile_pos))
-            var line := _spawn_line(line_child, 2.0, Color.RED)
-            line.add_point(global_pos - Vector2.RIGHT * 3)
-            line.add_point(global_pos + Vector2.RIGHT * 3)
+    # for marker in zones:
+    #     var outline := _generate_zone_outline(marker.global_position)
+    #     var start_pos: Vector2i = outline.keys().pick_random()
 
-        var start_pos: Vector2i = outline.keys().pick_random()
-        var ordered_outline = _generate_ordered_outline(outline, start_pos)
-        for i in ordered_outline.size():
-            var tile_pos: Vector2i = ordered_outline[i]
-            var line := _spawn_line(line_child2, 16.0, Color.from_rgba8(128, 0, i * 5, 255))
-            var global_pos := map.to_global(map.map_to_local(tile_pos))
-            line.add_point(global_pos - Vector2.RIGHT * 8)
-            line.add_point(global_pos + Vector2.RIGHT * 8)
+    #     var ordered_outline = _generate_ordered_outline(outline, start_pos)
+
+    #     for _i in 4:
+    #         var line := _spawn_line(line_child2, 1.0, Color.BLACK)
+    #         for i in ordered_outline.size():
+    #             var tile_pos: Vector2i = ordered_outline[i]
+    #             var global_pos := map.to_global(map.map_to_local(tile_pos))
+    #             var normal_dir := _get_outline_outer_normal(tile_pos)
+    #             line.add_point(global_pos + normal_dir * randf_range(1.0, 8.0))
+    #         line.add_point(line.points[0])
+
+func _get_outline_outer_normal(tile_pos: Vector2i) -> Vector2i:
+    var normal := Vector2i.ZERO
+    if map.get_cell_tile_data(tile_pos + Vector2i.LEFT):
+        normal += Vector2i.LEFT
+    if map.get_cell_tile_data(tile_pos + Vector2i.RIGHT):
+        normal += Vector2i.RIGHT
+    if map.get_cell_tile_data(tile_pos + Vector2i.UP):
+        normal += Vector2i.UP
+    if map.get_cell_tile_data(tile_pos + Vector2i.DOWN):
+        normal += Vector2i.DOWN
+    return normal
 
 func _generate_ordered_outline(outline: Dictionary, start_pos: Vector2i) -> Array:
     var tiles := []
