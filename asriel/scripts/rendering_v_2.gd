@@ -1,6 +1,8 @@
 @tool
 extends Node
 
+@export var camera: Camera2D
+
 @export var polygon_vp: SubViewport
 @export var polygon_cutout_vp: SubViewport
 
@@ -16,3 +18,8 @@ extends Node
 func _notification(what: int) -> void:
     if what == NOTIFICATION_ENTER_TREE:
         set_materials = true
+
+func _process(_delta: float) -> void:
+    var t := camera.get_canvas_transform()
+    polygon_vp.canvas_transform = t
+    # polygon_cutout_vp.canvas_transform = t

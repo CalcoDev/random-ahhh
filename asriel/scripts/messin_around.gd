@@ -71,6 +71,14 @@ func _generate_zones() -> void:
     _cell_to_partition = {}
     _partition_map(_map, _partitions, _cell_to_partition)
 
+    # var cols = []
+    # for p in _partitions:
+    #     cols.append(Color(randf(), randf(), randf(), 1.0))
+    # for cell in _map.get_used_cells():
+    #     _draw_tile(cell, cols[_cell_to_partition[cell]])
+    #     print(cell)
+    # return
+
     var touched_partitions := _get_adjacent_partitions(_zone.global_position, _cell_to_partition)
 
     for touched_partition in touched_partitions:
@@ -87,6 +95,7 @@ func _generate_zones() -> void:
             line.width = line_thickness
             # line.modulate = Color(0.7, 0.7, 0.7, 1.0)
             line.modulate = Color.WHITE
+            # line.modulate = Color.RED
             line.normal_pushback_range = normal_pushback_range
             line.point_wander_range = point_wander_range
             line.point_wander_time_range = point_wander_time_range
@@ -102,56 +111,133 @@ func _generate_zones() -> void:
                 var normal := Vector2i.ZERO
                 var horizontal := false
 
-                if _map.get_cell_tile_data(cell + Vector2i.LEFT):
+                var left := _map.get_cell_tile_data(cell + Vector2i.LEFT)
+                var right := _map.get_cell_tile_data(cell + Vector2i.RIGHT)
+                var up := _map.get_cell_tile_data(cell + Vector2i.UP)
+                var down := _map.get_cell_tile_data(cell + Vector2i.DOWN)
+
+                if left:
                     neighbour_count += 1
                     normal += Vector2i.LEFT
                     horizontal = true
-                if _map.get_cell_tile_data(cell + Vector2i.RIGHT):
+                if right:
                     neighbour_count += 1
                     normal += Vector2i.RIGHT
                     horizontal = true
-                if _map.get_cell_tile_data(cell + Vector2i.UP):
+                if up:
                     neighbour_count += 1
                     normal += Vector2i.UP
-                if _map.get_cell_tile_data(cell + Vector2i.DOWN):
+                if down:
                     neighbour_count += 1
                     normal += Vector2i.DOWN
                 normal *= -1
-                
-                if neighbour_count == 1:
-                    var nn := Vector2i(Vector2(normal).rotated(PI/2).round())
+
+                var top_left := _map.get_cell_tile_data(cell + Vector2i.LEFT + Vector2i.UP)
+                var top_right := _map.get_cell_tile_data(cell + Vector2i.RIGHT + Vector2i.UP)
+                var bot_left := _map.get_cell_tile_data(cell + Vector2i.LEFT + Vector2i.DOWN)
+                var bot_right := _map.get_cell_tile_data(cell + Vector2i.RIGHT + Vector2i.DOWN)
+
+                var nnc := int(top_left != null) + int(top_right != null) + int(bot_left != null) + int(bot_right != null)
+                if neighbour_count == 2 and nnc == 2:
+                    var nn := Vector2i.ZERO
+                    var diff := Vector2.ONE
+                    if idx != 0:
+                        diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                    if top_left and bot_right:
+                        nn = Vector2i(-1, 1)
+                        if diff.y < 0:
+                            nn *= -1
+                    if top_right and bot_left:
+                        nn = Vector2i(-1, -1)
+                        if diff.x > 0:
+                            nn *= -1
+
                     line._info.append({"base_pos": cell_world_pos, "normal": nn})
                     polygon_colour_buffer.append(_poly_col_buf(-nn))
                     idx += 1
-                    line._info.append({"base_pos": cell_world_pos, "normal": -normal})
-                    polygon_colour_buffer.append(_poly_col_buf(normal))
-                    idx += 1
-                    line._info.append({"base_pos": cell_world_pos, "normal": -nn})
-                    polygon_colour_buffer.append(_poly_col_buf(nn))
-                    idx += 1
-                elif neighbour_count == 2 and normal == Vector2i.ZERO:
-                    if not horizontal:
-                        var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                        var nn := Vector2i.LEFT if diff.y > 0 else Vector2i.RIGHT
+                elif neighbour_count == 0:
+                    var nn := Vector2i.ZERO
+                    var diff := Vector2.ONE
+                    if idx != 0:
+                        diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                    if nnc == 0: # isolated square
+                        nn = Vector2i.LEFT
                         line._info.append({"base_pos": cell_world_pos, "normal": nn})
                         polygon_colour_buffer.append(_poly_col_buf(-nn))
                         idx += 1
-                    else:
-                        var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                        var nn := Vector2i.DOWN if diff.x > 0 else Vector2i.UP
+                        nn = Vector2i.UP
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                        nn = Vector2i.RIGHT
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                        nn = Vector2i.DOWN
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                    if nnc == 1: # lone square connected
+                        nn = diff
+                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                    elif nnc == 2: # connection square
+                        if top_left and bot_right:
+                            nn = Vector2i(-1, 1)
+                            if diff.y < 0:
+                                nn *= -1
+                        if top_right and bot_left:
+                            nn = Vector2i(-1, -1)
+                            if diff.y < 0:
+                                nn *= -1
                         line._info.append({"base_pos": cell_world_pos, "normal": nn})
                         polygon_colour_buffer.append(_poly_col_buf(-nn))
                         idx += 1
                 else:
-                    line._info.append({"base_pos": cell_world_pos, "normal": normal})
-                    polygon_colour_buffer.append(_poly_col_buf(normal))
-                    idx += 1
-        
+                    if neighbour_count == 1:
+                        var nn := Vector2i(Vector2(normal).rotated(PI/2).round())
+                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
+                        idx += 1
+                        line._info.append({"base_pos": cell_world_pos, "normal": -normal})
+                        polygon_colour_buffer.append(_poly_col_buf(normal))
+                        idx += 1
+                        line._info.append({"base_pos": cell_world_pos, "normal": -nn})
+                        polygon_colour_buffer.append(_poly_col_buf(nn))
+                        idx += 1
+                    elif neighbour_count == 2 and normal == Vector2i.ZERO:
+                        if not horizontal:
+                            var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                            var nn := Vector2i.LEFT if diff.y > 0 else Vector2i.RIGHT
+                            line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                            polygon_colour_buffer.append(_poly_col_buf(-nn))
+                            idx += 1
+                        else:
+                            var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
+                            var nn := Vector2i.DOWN if diff.x > 0 else Vector2i.UP
+                            line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                            polygon_colour_buffer.append(_poly_col_buf(-nn))
+                            idx += 1
+                    else:
+                        line._info.append({"base_pos": cell_world_pos, "normal": normal})
+                        polygon_colour_buffer.append(_poly_col_buf(normal))
+                        idx += 1
 
             if i == 0:
+                line.init_wobblyness(false)
+                # var points := Geometry2D.offset_polyline(line.points, 1.0)[0]
                 # polygon
                 polygon_colour_buffer.append(polygon_colour_buffer[0])
-                line.init_wobblyness(false)
                 var polygon := Polygon2D.new()
                 _polygons.add_child(polygon)
                 if Engine.is_editor_hint():
@@ -276,6 +362,12 @@ func _partition_map(tile_map: TileMapLayer, partitions: Dictionary[int, Dictiona
             to_check.append(tile_pos + Vector2i(1, 0))
             to_check.append(tile_pos + Vector2i(0, 1))
             to_check.append(tile_pos + Vector2i(0, -1))
+
+            # do we like handle diagonals lol
+            to_check.append(tile_pos + Vector2i(-1, 1))
+            to_check.append(tile_pos + Vector2i(1, 1))
+            to_check.append(tile_pos + Vector2i(-1, -1))
+            to_check.append(tile_pos + Vector2i(1, -1))
 
 func _get_adjacent_partitions(pos: Vector2, cell_to_partition: Dictionary) -> Dictionary:
     var tile_pos := _map.local_to_map(_map.to_local(pos))
