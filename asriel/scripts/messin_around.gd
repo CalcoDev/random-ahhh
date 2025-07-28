@@ -46,7 +46,6 @@ func _ready() -> void:
     _generate_zones()
 
 func _process(delta: float) -> void:
-    # return
     if not Engine.is_editor_hint() or (Engine.is_editor_hint() and update_stuff):
         for line in _lines.get_children():
             line._process_wobblyness(delta)
@@ -85,7 +84,7 @@ func _generate_zones() -> void:
                 line.owner = get_tree().edited_scene_root
 
             line.width = line_thickness
-            line.modulate = Color.RED
+            line.modulate = Color(0.7, 0.7, 0.7, 1.0)
             line.normal_pushback_range = normal_pushback_range
             line.point_wander_range = point_wander_range
             line.point_wander_time_range = point_wander_time_range

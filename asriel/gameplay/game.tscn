@@ -1,24 +1,92 @@
-[gd_scene load_steps=9 format=4 uid="uid://bcrd510at1h0p"]
+[gd_scene load_steps=26 format=4 uid="uid://bcrd510at1h0p"]
 
 [ext_resource type="Script" uid="uid://dvif8380i7lq0" path="res://asriel/scripts/messin_around.gd" id="1_4aiaw"]
 [ext_resource type="Script" uid="uid://grqltrt1gvv4" path="res://asriel/scripts/rendering_v_2.gd" id="1_xpmk6"]
 [ext_resource type="TileSet" uid="uid://bfp85infa4i42" path="res://asriel/resources/tilesets/tileset.tres" id="2_e1fnk"]
 [ext_resource type="Shader" uid="uid://dd2u7bwoaxf0b" path="res://asriel/shaders/polygon_displacement.gdshader" id="3_1x7wm"]
 [ext_resource type="Shader" uid="uid://d0ry0u2byj2n4" path="res://asriel/shaders/polygon_cutout.gdshader" id="6_1x7wm"]
+[ext_resource type="Shader" uid="uid://bob1lwpon4ptw" path="res://asriel/shaders/celeste_dreamblock/celeste_dreamblock.gdshader" id="6_84oh5"]
+[ext_resource type="Texture2D" uid="uid://b43xj0cwv7jlm" path="res://asriel/assets/wall_backgrounds/background.png" id="7_84oh5"]
+[ext_resource type="Script" uid="uid://d0ea11x7xwvei" path="res://asriel/scripts/celeste_dreamblock/celeste_dreamblock_attempt.gd" id="8_rmncq"]
+[ext_resource type="Shader" uid="uid://b4j233ak1rlg4" path="res://asriel/shaders/celeste_dreamblock/celeste_dreamblock_mid.gdshader" id="9_5c5y4"]
+[ext_resource type="Texture2D" uid="uid://c4akhef5cuyx1" path="res://asriel/assets/wall_backgrounds/middle.png" id="10_wgbeu"]
+[ext_resource type="Shader" uid="uid://0a4vh4i3p38s" path="res://asriel/shaders/celeste_dreamblock/celeste_dreamblock_front.gdshader" id="11_ng5rc"]
+[ext_resource type="Texture2D" uid="uid://cd76h3wvsvc7a" path="res://asriel/assets/wall_backgrounds/front.png" id="12_rxmmv"]
+[ext_resource type="Shader" uid="uid://dlgkp8afnuw7m" path="res://asriel/shaders/celeste_dreamblock/celeste_dreamblock_blitter.gdshader" id="13_ufp2w"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_84oh5"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_v4b4c"]
 viewport_path = NodePath("PolygonVP")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v8xop"]
 shader = ExtResource("6_1x7wm")
-shader_parameter/u_polygon_tex = SubResource("ViewportTexture_84oh5")
+shader_parameter/u_polygon_tex = SubResource("ViewportTexture_v4b4c")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_1x7wm"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_84oh5"]
+shader = ExtResource("6_84oh5")
+shader_parameter/u_tex = ExtResource("7_84oh5")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(1.5, 1.5)
+shader_parameter/u_offset = Vector2(4.71135, -1.72751)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yfp4n"]
+frequency = 0.0122
+fractal_type = 3
+fractal_lacunarity = 0.875
+fractal_gain = 1.525
+fractal_weighted_strength = 0.35
+fractal_ping_pong_strength = 2.25
+domain_warp_type = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wgbeu"]
+shader = ExtResource("9_5c5y4")
+shader_parameter/u_tex = ExtResource("10_wgbeu")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(1.2, 1.2)
+shader_parameter/u_offset = Vector2(4.71212, -1.71647)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rxmmv"]
+shader = ExtResource("11_ng5rc")
+shader_parameter/u_tex = ExtResource("12_rxmmv")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(1.2, 1.2)
+shader_parameter/u_offset = Vector2(4.7134, -1.69806)
+
+[sub_resource type="Environment" id="Environment_ufp2w"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.07
+glow_blend_mode = 1
+glow_hdr_threshold = 0.41
+
+[sub_resource type="Gradient" id="Gradient_ufp2w"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yfp4n"]
+gradient = SubResource("Gradient_ufp2w")
+width = 120
+height = 120
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ufp2w"]
+viewport_path = NodePath("CelesteDreamBlock")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_yfp4n"]
 viewport_path = NodePath("PolygonCutoutVP")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yfp4n"]
+resource_local_to_scene = true
+shader = ExtResource("13_ufp2w")
+shader_parameter/u_dreamblock_tex = SubResource("ViewportTexture_ufp2w")
+shader_parameter/u_mask = SubResource("ViewportTexture_yfp4n")
 
 [node name="Game" type="Node2D"]
 light_mask = 0
 visibility_layer = 1048575
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.212272, 0.0163258, 0.315603, 1)
 
 [node name="RenderingV2" type="Node" parent="." node_paths=PackedStringArray("polygon_vp", "polygon_cutout_vp", "polygon_cutout")]
 script = ExtResource("1_xpmk6")
@@ -28,7 +96,6 @@ polygon_cutout = NodePath("../PolygonCutoutVP/ColorRect")
 
 [node name="MessinAround" type="Node" parent="." node_paths=PackedStringArray("_map", "_lines", "_polygons", "_zone")]
 script = ExtResource("1_4aiaw")
-update_stuff = true
 polygon_shader = ExtResource("3_1x7wm")
 _map = NodePath("../TileMapLayer")
 _lines = NodePath("../Lines")
@@ -70,13 +137,57 @@ custom_minimum_size = Vector2(512, 512)
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="CelesteDreamBlock" type="SubViewport" parent="."]
+
+[node name="CelesteDreamblockBack" type="ColorRect" parent="CelesteDreamBlock" node_paths=PackedStringArray("mid", "front")]
+material = SubResource("ShaderMaterial_84oh5")
+offset_right = 512.0
+offset_bottom = 512.0
+script = ExtResource("8_rmncq")
+mid = NodePath("CelesteDreamblockMid")
+front = NodePath("CelesteDreamblockFront")
+_noise = SubResource("FastNoiseLite_yfp4n")
+_ampl = 10.0
+
+[node name="CelesteDreamblockMid" type="ColorRect" parent="CelesteDreamBlock/CelesteDreamblockBack"]
+material = SubResource("ShaderMaterial_wgbeu")
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="CelesteDreamblockFront" type="ColorRect" parent="CelesteDreamBlock/CelesteDreamblockBack"]
+modulate = Color(17.917, 4.28, 11.099, 1)
+material = SubResource("ShaderMaterial_rxmmv")
+layout_mode = 0
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CelesteDreamBlock"]
+environment = SubResource("Environment_ufp2w")
+
 [node name="ZoneMarker" type="Marker2D" parent="."]
 position = Vector2(148, 137)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(172.885, 114.175)
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="Camera2D"]
+z_index = -7
+custom_minimum_size = Vector2(240, 240)
+offset_left = -120.0
+offset_top = -120.0
+offset_right = -80.0
+offset_bottom = -80.0
+color = Color(0, 0, 0, 1)
+
+[node name="PointLight2D" type="PointLight2D" parent="Camera2D"]
+position = Vector2(-52.885, 3.825)
+scale = Vector2(1.85498, 1.76677)
+blend_mode = 2
+texture = SubResource("GradientTexture2D_yfp4n")
+
+[node name="DreamBlockBlit" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_yfp4n")
+custom_minimum_size = Vector2(512, 512)
 offset_right = 40.0
 offset_bottom = 40.0
-texture = SubResource("ViewportTexture_1x7wm")
