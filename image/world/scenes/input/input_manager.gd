@@ -7,13 +7,15 @@ class Data:
 
 	var mouse_pos := Vector2.ZERO
 
-	var interact := IKey.new()
+	# var interact := IKey.new()
+	var dash := IKey.new()
 
-func _update(_delta: float) -> void:
+func _update(delta: float) -> void:
 	self.data.move_vec = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if self.data.move_vec.length_squared() > 0.01:
 		self.data.last_nonzero_move_vec = self.data.move_vec
 	self.data.mouse_pos = get_global_mouse_position()
+	self.data.dash.update_from_input("dash", delta)
 	# self.data.split.update_from_input("split", delta)
 	# self.data.swap_body_control.update_from_input("swap_body_control", delta)
 	# self.data.interact.update_from_input("interact", delta)

@@ -14,10 +14,15 @@ extends Node
             _lines.remove_child(child)
         for child in _polygons.get_children():
             _polygons.remove_child(child)
+        for child in _collision_infos.get_children():
+            _collision_infos.remove_child(child)
 
 @export var polygon_shader: Shader
 
 @export_group("References")
+@export var _enclosing_partition_marker: Node2D
+@export var _collision_infos: Node
+
 @export var _map: TileMapLayer
 @export var _lines: Node
 @export var _polygons: Node
@@ -60,11 +65,7 @@ func _process(delta: float) -> void:
                 poly.vertex_colors[j].a = encoded.g
 
 func _generate_zones() -> void:
-    for child in _lines.get_children():
-        _lines.remove_child(child)
-    for child in _polygons.get_children():
-        _polygons.remove_child(child)
-
+    obliterate_children = true
     
     _partitions = {}
     _cell_to_partition = {}
@@ -84,7 +85,8 @@ func _generate_zones() -> void:
                 line.owner = get_tree().edited_scene_root
 
             line.width = line_thickness
-            line.modulate = Color(0.7, 0.7, 0.7, 1.0)
+            # line.modulate = Color(0.7, 0.7, 0.7, 1.0)
+            line.modulate = Color.WHITE
             line.normal_pushback_range = normal_pushback_range
             line.point_wander_range = point_wander_range
             line.point_wander_time_range = point_wander_time_range
@@ -147,6 +149,7 @@ func _generate_zones() -> void:
         
 
             if i == 0:
+                # polygon
                 polygon_colour_buffer.append(polygon_colour_buffer[0])
                 line.init_wobblyness(false)
                 var polygon := Polygon2D.new()
@@ -160,6 +163,25 @@ func _generate_zones() -> void:
                 var mat := ShaderMaterial.new()
                 mat.shader = polygon_shader
                 polygon.material = mat
+
+                # collision
+                # print(touched_partition)
+                var enclosing_cell := _map.local_to_map(_map.to_local(_enclosing_partition_marker.global_position))
+                var enclosing_partition := _cell_to_partition[enclosing_cell]
+
+                # if touched_partition != enclosing_partition:
+                var static_body := StaticBody2D.new()
+                _collision_infos.add_child(static_body)
+                if Engine.is_editor_hint():
+                    static_body.owner = get_tree().edited_scene_root
+
+                var collision_polygon := CollisionPolygon2D.new()
+                static_body.add_child(collision_polygon)
+                if Engine.is_editor_hint():
+                    collision_polygon.owner = get_tree().edited_scene_root
+                collision_polygon.polygon = polygon.polygon.slice(0, -1)
+                if touched_partition == enclosing_partition:
+                    collision_polygon.build_mode = CollisionPolygon2D.BUILD_SEGMENTS
             
             line.init_wobblyness(true)
 

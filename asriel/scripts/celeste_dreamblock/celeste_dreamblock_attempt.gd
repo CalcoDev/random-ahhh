@@ -1,6 +1,8 @@
 @tool
 extends ColorRect
 
+@export var camera: Camera2D
+
 @export var mid: ColorRect
 @export var front: ColorRect
 
@@ -23,7 +25,7 @@ var t := 0.0
 func _process(delta: float) -> void:
     t += delta * 0.5
     var angle := _noise.get_noise_1d(t) * TAU
-    var _global_offset = Vector2(cos(angle), sin(angle)) * _ampl * 0.5
+    var _global_offset = Vector2(cos(angle), sin(angle)) * _ampl * 0.05
     var offset: Vector2 = Vector2.ZERO
 
     if Engine.is_editor_hint():
@@ -31,7 +33,8 @@ func _process(delta: float) -> void:
         var transform := vp.global_canvas_transform
         var center := transform.affine_inverse() * (vp.size * 0.5)
         offset = (center - size * 0.5) * 0.001
-    # else:
+    else:
+        offset = camera.global_position * 0.001
     #     pass
 
     self.material.set_shader_parameter("u_offset", offset * 0.9 + _global_offset)

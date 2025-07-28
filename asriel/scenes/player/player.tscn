@@ -1,0 +1,119 @@
+[gd_scene load_steps=18 format=3 uid="uid://b7em7yhf24iai"]
+
+[ext_resource type="Texture2D" uid="uid://pjhby1vbtk4c" path="res://asriel/assets/player/player_idle.png" id="1_1fbl4"]
+[ext_resource type="Script" uid="uid://cp2e3a5614dxr" path="res://asriel/scenes/player/player.gd" id="1_20lan"]
+[ext_resource type="PackedScene" uid="uid://yjawrdrndg4m" path="res://asriel/scenes/player/vfx/dash_enter_particles.tscn" id="2_7i061"]
+[ext_resource type="Texture2D" uid="uid://d03vsiudnphv3" path="res://asriel/assets/player/player_run.png" id="2_20lan"]
+[ext_resource type="Texture2D" uid="uid://djd0lyysnwjby" path="res://asriel/assets/player/player_dash.png" id="2_xccgt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nfrcg"]
+atlas = ExtResource("2_xccgt")
+region = Rect2(0, 0, 22, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xccgt"]
+atlas = ExtResource("1_1fbl4")
+region = Rect2(0, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w6ck4"]
+atlas = ExtResource("1_1fbl4")
+region = Rect2(22, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rsuc7"]
+atlas = ExtResource("1_1fbl4")
+region = Rect2(44, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpw3b"]
+atlas = ExtResource("2_20lan")
+region = Rect2(0, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xr848"]
+atlas = ExtResource("2_20lan")
+region = Rect2(22, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebonr"]
+atlas = ExtResource("2_20lan")
+region = Rect2(44, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75swg"]
+atlas = ExtResource("2_20lan")
+region = Rect2(66, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkm1g"]
+atlas = ExtResource("2_20lan")
+region = Rect2(88, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pkb5f"]
+atlas = ExtResource("2_20lan")
+region = Rect2(110, 0, 22, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nfrcg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nfrcg")
+}],
+"loop": true,
+"name": &"dash",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xccgt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w6ck4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rsuc7")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpw3b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xr848")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ebonr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75swg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkm1g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pkb5f")
+}],
+"loop": true,
+"name": &"run",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1fbl4"]
+radius = 5.0
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("anim", "_dash_trail")]
+script = ExtResource("1_20lan")
+anim = NodePath("AnimatedSprite2D")
+_dash_trail = NodePath("DashTrail")
+dash_speed = 50.0
+dash_trail_spawn_time = 0.02
+dash_trail_duration = 0.3
+dash_trail_color = Color(0.265714, 0.350667, 0.603696, 1)
+dash_enter_vfx = ExtResource("2_7i061")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_nfrcg")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1fbl4")
+
+[node name="DashTrail" type="Node2D" parent="."]
+z_index = -1

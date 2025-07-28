@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://yjawrdrndg4m"]
+
+[ext_resource type="Texture2D" uid="uid://2spun2awi7ji" path="res://asriel/assets/particles/circles.png" id="1_5rtxw"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_rsuc7"]
+particles_animation = true
+particles_anim_h_frames = 7
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_w6ck4"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_rsuc7"]
+curve = SubResource("Curve_w6ck4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vpw3b"]
+lifetime_randomness = 0.79
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(6, 6, 1)
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+spread = 180.0
+flatness = 1.0
+initial_velocity_min = 20.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, 0, 0)
+damping_max = 40.0
+alpha_curve = SubResource("CurveTexture_rsuc7")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[node name="DashEnterParticles" type="GPUParticles2D"]
+material = SubResource("CanvasItemMaterial_rsuc7")
+texture = ExtResource("1_5rtxw")
+lifetime = 2.0
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_vpw3b")
