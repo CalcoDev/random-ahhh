@@ -13,7 +13,7 @@ config_version=5
 config/name="deferrred-lights-test"
 run/main_scene="uid://c5f20vsnm5t0b"
 config/features=PackedStringArray("4.5", "Forward Plus")
-run/max_fps=60
+run/max_fps=240
 config/icon="res://icon.svg"
 
 [autoload]

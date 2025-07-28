@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8gm6enhgp1ay"
-path="res://.godot/imported/gun.png-a14814e76adc12b089d73a850ed699ac.ctex"
+uid="uid://dtfl2swqv17wm"
+path="res://.godot/imported/baseball_bat.png-cb2f2f1281b085bcc950fb818b2c55fe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://asriel/assets/weapons/gun/gun.png"
-dest_files=["res://.godot/imported/gun.png-a14814e76adc12b089d73a850ed699ac.ctex"]
+source_file="res://asriel/assets/weapons/baseball/baseball_bat.png"
+dest_files=["res://.godot/imported/baseball_bat.png-cb2f2f1281b085bcc950fb818b2c55fe.ctex"]
 
 [params]
 

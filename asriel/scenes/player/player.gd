@@ -71,8 +71,11 @@ func _process(delta: float) -> void:
         _dash_trail_count += 1
 
         var duration := dash_trail_duration if is_dashing else walk_trail_duration
-        if not is_dashing and _dash_timer > 0.0:
-            duration = 0.0
+        if not is_dashing:
+            if _dash_timer > 0.0:
+                duration = 0.0
+            if inp.length_squared() < 0.01:
+                duration = 0.09
 
         var sprite := Sprite2D.new()
         sprite.texture = anim.sprite_frames.get_frame_texture(anim.animation, anim.frame)
@@ -127,7 +130,7 @@ func _physics_process(delta: float) -> void:
 func _start_dash() -> void:
     is_dashing = true
     _dash_timer = dash_duration
-    _dash_dir = InputManager.data.move_vec
+    _dash_dir = InputManager.data.last_nonzero_move_vec
     _dash_trail_spawner_timer = 0.0
 
     var vfx := dash_enter_vfx.instantiate() as GPUParticles2D
