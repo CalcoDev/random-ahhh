@@ -15,11 +15,7 @@ extends Node
         for child in _polygons.get_children():
             _polygons.remove_child(child)
 
-@export var aaaaa: bool = false:
-    set(value):
-        aaaaa = false
-        var polygon := _polygons.get_child(0)
-        print(polygon)
+@export var polygon_shader: Shader
 
 @export_group("References")
 @export var _map: TileMapLayer
@@ -36,9 +32,12 @@ extends Node
 @export var point_wander_time_range: Vector2 = Vector2(0.5, 3.0)
 @export var point_wander_speed_range: Vector2 = Vector2(1.0, 4.0)
 
-# var partitions: Dictionary[int, set] = {}
 var _partitions: Dictionary[int, Dictionary] = {}
 var _cell_to_partition: Dictionary[Vector2i, int] = {}
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_ENTER_TREE:
+        obliterate_children = true
 
 func _ready() -> void:
     # return
@@ -49,21 +48,17 @@ func _ready() -> void:
 func _process(delta: float) -> void:
     # return
     if not Engine.is_editor_hint() or (Engine.is_editor_hint() and update_stuff):
-        # var idx := -1
-        for child in _lines.get_children():
-            # idx += 1
-            if child is WobblyLine2D:
-                child._process_wobblyness(delta)
-                # var paaaa = child.points.duplicate()
-                # paaaa.reverse()
-                # var is_clock := Geometry2D.is_polygon_clockwise(child.points.duplicate()) or Geometry2D.is_polygon_clockwise(paaaa)
-                # if is_clock:
-#                 var arr := Array(child.points)
-#                 arr.sort_custom(_custom_sort)
-                # _polygons.get_child(idx).polygon = child.points
-
-# func _custom_sort(a, b):
-#     return a.angle() < b.angle()
+        for line in _lines.get_children():
+            line._process_wobblyness(delta)
+        for polygon_idx in _polygons.get_child_count():
+            var poly: Polygon2D = _polygons.get_child(polygon_idx)
+            var line: WobblyLine2D = _lines.get_child(polygon_idx * lines_per_partition)
+            var s := poly.polygon.size() - 1
+            for j in s+1:
+                var diff: Vector2 = line._info[j % s]["base_pos"] - line.points[j]
+                var encoded := _poly_col_buf(diff)
+                poly.vertex_colors[j].b = encoded.r
+                poly.vertex_colors[j].a = encoded.g
 
 func _generate_zones() -> void:
     for child in _lines.get_children():
@@ -97,6 +92,8 @@ func _generate_zones() -> void:
             line.point_wander_speed_range = point_wander_speed_range
             line._info = []
 
+            var polygon_colour_buffer := PackedColorArray()
+
             var idx := 0
             for cell in outline:
                 var cell_world_pos := _map.to_global(_map.map_to_local(cell))
@@ -123,53 +120,56 @@ func _generate_zones() -> void:
                 if neighbour_count == 1:
                     var nn := Vector2i(Vector2(normal).rotated(PI/2).round())
                     line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                    polygon_colour_buffer.append(_poly_col_buf(-nn))
                     idx += 1
                     line._info.append({"base_pos": cell_world_pos, "normal": -normal})
+                    polygon_colour_buffer.append(_poly_col_buf(normal))
                     idx += 1
                     line._info.append({"base_pos": cell_world_pos, "normal": -nn})
+                    polygon_colour_buffer.append(_poly_col_buf(nn))
                     idx += 1
                 elif neighbour_count == 2 and normal == Vector2i.ZERO:
                     if not horizontal:
                         var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
                         var nn := Vector2i.LEFT if diff.y > 0 else Vector2i.RIGHT
                         line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
                         idx += 1
                     else:
                         var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
                         var nn := Vector2i.DOWN if diff.x > 0 else Vector2i.UP
                         line._info.append({"base_pos": cell_world_pos, "normal": nn})
+                        polygon_colour_buffer.append(_poly_col_buf(-nn))
                         idx += 1
                 else:
                     line._info.append({"base_pos": cell_world_pos, "normal": normal})
+                    polygon_colour_buffer.append(_poly_col_buf(normal))
                     idx += 1
         
 
             if i == 0:
+                polygon_colour_buffer.append(polygon_colour_buffer[0])
                 line.init_wobblyness(false)
                 var polygon := Polygon2D.new()
-                polygon.polygon = line.points
                 _polygons.add_child(polygon)
                 if Engine.is_editor_hint():
                     polygon.owner = get_tree().edited_scene_root
+
+                polygon.polygon = line.points
+                polygon.vertex_colors = polygon_colour_buffer
                 polygon.color = Color.from_rgba8(255, 0, 0, 1)
+                var mat := ShaderMaterial.new()
+                mat.shader = polygon_shader
+                polygon.material = mat
             
             line.init_wobblyness(true)
-            # var pp := line.points.duplicate()
-            # var hull := Geometry2D.convex_hull(pp)
-            # # hull = Geometry2D.offset_polygon(hull.duplicate(), 40.0)[0]
-            # var ahull = Geometry2D.offset_polygon(hull.duplicate(), 400.0)
-            # print(ahull.size())
-            # hull = ahull[0]
-            # var bb := Geometry2D.clip_polygons(hull, pp)
-            # # var bb := Geometry2D.clip_polygons(pp, hull)
-            # for b in bb:
-            #     var polygon := Polygon2D.new()
-            #     polygon.polygon = b
-            #     _polygons.add_child(polygon)
-            #     if Engine.is_editor_hint():
-            #         polygon.owner = get_tree().edited_scene_root
-            #     polygon.color = Color.from_rgba8(0, 0, 255, 53)
 
+
+func _poly_col_buf(normal: Vector2i) -> Color:
+    var unorm := Vector2(normal).normalized()
+    # unorm.y *= -1.0
+    unorm = (unorm + Vector2.ONE) * 0.5
+    return Color(unorm.x, unorm.y, 0.0, 0.0)
 
 
 func _get_outline_outer_normal(tile_pos: Vector2i) -> Vector2i:

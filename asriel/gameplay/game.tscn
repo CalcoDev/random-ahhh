@@ -1,16 +1,17 @@
-[gd_scene load_steps=8 format=4 uid="uid://bcrd510at1h0p"]
+[gd_scene load_steps=9 format=4 uid="uid://bcrd510at1h0p"]
 
 [ext_resource type="Script" uid="uid://dvif8380i7lq0" path="res://asriel/scripts/messin_around.gd" id="1_4aiaw"]
-[ext_resource type="Script" uid="uid://grqltrt1gvv4" path="res://asriel/gameplay/rendering_v_2.gd" id="1_xpmk6"]
+[ext_resource type="Script" uid="uid://grqltrt1gvv4" path="res://asriel/scripts/rendering_v_2.gd" id="1_xpmk6"]
 [ext_resource type="TileSet" uid="uid://bfp85infa4i42" path="res://asriel/resources/tilesets/tileset.tres" id="2_e1fnk"]
+[ext_resource type="Shader" uid="uid://dd2u7bwoaxf0b" path="res://asriel/shaders/polygon_displacement.gdshader" id="3_1x7wm"]
 [ext_resource type="Shader" uid="uid://d0ry0u2byj2n4" path="res://asriel/shaders/polygon_cutout.gdshader" id="6_1x7wm"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_v8xop"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_84oh5"]
 viewport_path = NodePath("PolygonVP")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v8xop"]
 shader = ExtResource("6_1x7wm")
-shader_parameter/u_polygon_tex = SubResource("ViewportTexture_v8xop")
+shader_parameter/u_polygon_tex = SubResource("ViewportTexture_84oh5")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1x7wm"]
 viewport_path = NodePath("PolygonCutoutVP")
@@ -27,12 +28,16 @@ polygon_cutout = NodePath("../PolygonCutoutVP/ColorRect")
 
 [node name="MessinAround" type="Node" parent="." node_paths=PackedStringArray("_map", "_lines", "_polygons", "_zone")]
 script = ExtResource("1_4aiaw")
+update_stuff = true
+polygon_shader = ExtResource("3_1x7wm")
 _map = NodePath("../TileMapLayer")
 _lines = NodePath("../Lines")
 _polygons = NodePath("../PolygonVP/Polygons")
 _zone = NodePath("../ZoneMarker")
 normal_pushback_range = Vector2(0, 0)
-point_wander_speed_range = Vector2(4, 10)
+point_wander_range = Vector2(-8, 12)
+point_wander_time_range = Vector2(1, 4)
+point_wander_speed_range = Vector2(2, 5)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 visible = false
@@ -69,7 +74,7 @@ offset_bottom = 40.0
 position = Vector2(148, 137)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(323, 307)
+position = Vector2(172.885, 114.175)
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 40.0

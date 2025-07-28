@@ -13,5 +13,6 @@ extends Node
             var mat := polygon_cutout.material as ShaderMaterial
             mat.set_shader_parameter("u_polygon_tex", polygon_vp.get_texture())
 
-func _ready() -> void:
-    set_materials = true
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_ENTER_TREE:
+        set_materials = true
