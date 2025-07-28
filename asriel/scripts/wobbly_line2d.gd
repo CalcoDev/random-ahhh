@@ -8,18 +8,18 @@ var point_wander_speed_range: Vector2
 
 var _info: Array[Dictionary] = []
 
-func _process(delta: float) -> void:
-    if not Engine.is_editor_hint():
-        _process_wobblyness(delta)
+# func _process(delta: float) -> void:
+    # if not Engine.is_editor_hint():
+    #     _process_wobblyness(delta)
+    # pass
 
-func init_wobblyness(offset: bool) -> void:
-    clear_points()
-    for info in _info:
-        add_point(info["base_pos"] + info["normal"] * (-2 + (int(offset) * _rand_range(normal_pushback_range))))
+func init_wobblyness() -> void:
+    assert(_info.size() == points.size(), "what the frick. size nono.")
+    for i in _info.size():
+        var info := _info[i]
         info["wander_timer"] = 0.0
         info["wander_speed"] = _rand_range(point_wander_speed_range)
         info["target_pos"] = info["base_pos"]
-    add_point(points[0])
 
 func _process_wobblyness(delta: float) -> void:
     for i in _info.size():

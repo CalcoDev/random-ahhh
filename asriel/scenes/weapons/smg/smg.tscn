@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh3yut6uuiua"]
+
+[ext_resource type="Texture2D" uid="uid://cdqa3ys1riqfl" path="res://asriel/assets/weapons/smg/smg.png" id="1_35xg2"]
+[ext_resource type="Script" uid="uid://cbyb33t6g0myr" path="res://asriel/scenes/weapons/weapon.gd" id="1_yguue"]
+
+[node name="SMG" type="Node2D"]
+script = ExtResource("1_yguue")
+hold_position_min = Vector2(4, 0)
+hold_position_offset = Vector2(8, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+texture = ExtResource("1_35xg2")

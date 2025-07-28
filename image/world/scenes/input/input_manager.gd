@@ -9,6 +9,7 @@ class Data:
 
 	# var interact := IKey.new()
 	var dash := IKey.new()
+	var fire_weapon := IKey.new()
 
 func _update(delta: float) -> void:
 	self.data.move_vec = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -16,6 +17,7 @@ func _update(delta: float) -> void:
 		self.data.last_nonzero_move_vec = self.data.move_vec
 	self.data.mouse_pos = get_global_mouse_position()
 	self.data.dash.update_from_input("dash", delta)
+	self.data.fire_weapon.update_from_input("fire_weapon", delta)
 	# self.data.split.update_from_input("split", delta)
 	# self.data.swap_body_control.update_from_input("swap_body_control", delta)
 	# self.data.interact.update_from_input("interact", delta)

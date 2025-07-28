@@ -25,7 +25,7 @@ vec4 _from_norm(vec4 v) {
 void vertex() {
     v_color = _from_norm(COLOR);
     //VERTEX = VERTEX + v_color.xy * 5.0 + -v_color.zw * 10.0;
-    VERTEX += v_color.xy * 5.0;
+    VERTEX += v_color.xy * -5.0;
     VERTEX += -v_color.zw * 5.0;
 }
 

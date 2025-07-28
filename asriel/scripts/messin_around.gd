@@ -57,9 +57,9 @@ func _process(delta: float) -> void:
         for polygon_idx in _polygons.get_child_count():
             var poly: Polygon2D = _polygons.get_child(polygon_idx)
             var line: WobblyLine2D = _lines.get_child(polygon_idx * lines_per_partition)
-            var s := poly.polygon.size() - 1
-            for j in s+1:
-                var diff: Vector2 = line._info[j % s]["base_pos"] - line.points[j]
+            var s := poly.polygon.size()
+            for j in s:
+                var diff: Vector2 = line._info[j]["base_pos"] - line.points[j]
                 var encoded := _poly_col_buf(diff)
                 poly.vertex_colors[j].b = encoded.r
                 poly.vertex_colors[j].a = encoded.g
@@ -71,14 +71,6 @@ func _generate_zones() -> void:
     _cell_to_partition = {}
     _partition_map(_map, _partitions, _cell_to_partition)
 
-    # var cols = []
-    # for p in _partitions:
-    #     cols.append(Color(randf(), randf(), randf(), 1.0))
-    # for cell in _map.get_used_cells():
-    #     _draw_tile(cell, cols[_cell_to_partition[cell]])
-    #     print(cell)
-    # return
-
     var touched_partitions := _get_adjacent_partitions(_zone.global_position, _cell_to_partition)
 
     for touched_partition in touched_partitions:
@@ -86,6 +78,7 @@ func _generate_zones() -> void:
         var enter_pos: Vector2i = touched_partitions[touched_partition][1]
 
         var outline := _trace(start_pos, enter_pos)
+
         for i in lines_per_partition:
             var line := WobblyLine2D.new()
             _lines.add_child(line)
@@ -93,151 +86,35 @@ func _generate_zones() -> void:
                 line.owner = get_tree().edited_scene_root
 
             line.width = line_thickness
-            # line.modulate = Color(0.7, 0.7, 0.7, 1.0)
             line.modulate = Color.WHITE
-            # line.modulate = Color.RED
             line.normal_pushback_range = normal_pushback_range
             line.point_wander_range = point_wander_range
             line.point_wander_time_range = point_wander_time_range
             line.point_wander_speed_range = point_wander_speed_range
             line._info = []
 
+            for cell_index in outline.size():
+                var cell := outline[cell_index] as Vector2i
+                var cell_world_pos := _map.to_global(_map.map_to_local(cell))
+                line.add_point(cell_world_pos)
+
+            var og_polyline := line.points.duplicate()
+
+            var points := Geometry2D.offset_polyline(line.points, 5.0)[0]
+            line.points = points
+            line.add_point(line.points[0])
+
             var polygon_colour_buffer := PackedColorArray()
 
-            var idx := 0
-            for cell in outline:
-                var cell_world_pos := _map.to_global(_map.map_to_local(cell))
-                var neighbour_count := 0
-                var normal := Vector2i.ZERO
-                var horizontal := false
-
-                var left := _map.get_cell_tile_data(cell + Vector2i.LEFT)
-                var right := _map.get_cell_tile_data(cell + Vector2i.RIGHT)
-                var up := _map.get_cell_tile_data(cell + Vector2i.UP)
-                var down := _map.get_cell_tile_data(cell + Vector2i.DOWN)
-
-                if left:
-                    neighbour_count += 1
-                    normal += Vector2i.LEFT
-                    horizontal = true
-                if right:
-                    neighbour_count += 1
-                    normal += Vector2i.RIGHT
-                    horizontal = true
-                if up:
-                    neighbour_count += 1
-                    normal += Vector2i.UP
-                if down:
-                    neighbour_count += 1
-                    normal += Vector2i.DOWN
-                normal *= -1
-
-                var top_left := _map.get_cell_tile_data(cell + Vector2i.LEFT + Vector2i.UP)
-                var top_right := _map.get_cell_tile_data(cell + Vector2i.RIGHT + Vector2i.UP)
-                var bot_left := _map.get_cell_tile_data(cell + Vector2i.LEFT + Vector2i.DOWN)
-                var bot_right := _map.get_cell_tile_data(cell + Vector2i.RIGHT + Vector2i.DOWN)
-
-                var nnc := int(top_left != null) + int(top_right != null) + int(bot_left != null) + int(bot_right != null)
-                if neighbour_count == 2 and nnc == 2:
-                    var nn := Vector2i.ZERO
-                    var diff := Vector2.ONE
-                    if idx != 0:
-                        diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                    if top_left and bot_right:
-                        nn = Vector2i(-1, 1)
-                        if diff.y < 0:
-                            nn *= -1
-                    if top_right and bot_left:
-                        nn = Vector2i(-1, -1)
-                        if diff.x > 0:
-                            nn *= -1
-
-                    line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                    polygon_colour_buffer.append(_poly_col_buf(-nn))
-                    idx += 1
-                elif neighbour_count == 0:
-                    var nn := Vector2i.ZERO
-                    var diff := Vector2.ONE
-                    if idx != 0:
-                        diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                    if nnc == 0: # isolated square
-                        nn = Vector2i.LEFT
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        nn = Vector2i.UP
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        nn = Vector2i.RIGHT
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        nn = Vector2i.DOWN
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                    if nnc == 1: # lone square connected
-                        nn = diff
-                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        nn = Vector2i(Vector2(nn).rotated(PI/2).round())
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                    elif nnc == 2: # connection square
-                        if top_left and bot_right:
-                            nn = Vector2i(-1, 1)
-                            if diff.y < 0:
-                                nn *= -1
-                        if top_right and bot_left:
-                            nn = Vector2i(-1, -1)
-                            if diff.y < 0:
-                                nn *= -1
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                else:
-                    if neighbour_count == 1:
-                        var nn := Vector2i(Vector2(normal).rotated(PI/2).round())
-                        line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                        polygon_colour_buffer.append(_poly_col_buf(-nn))
-                        idx += 1
-                        line._info.append({"base_pos": cell_world_pos, "normal": -normal})
-                        polygon_colour_buffer.append(_poly_col_buf(normal))
-                        idx += 1
-                        line._info.append({"base_pos": cell_world_pos, "normal": -nn})
-                        polygon_colour_buffer.append(_poly_col_buf(nn))
-                        idx += 1
-                    elif neighbour_count == 2 and normal == Vector2i.ZERO:
-                        if not horizontal:
-                            var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                            var nn := Vector2i.LEFT if diff.y > 0 else Vector2i.RIGHT
-                            line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                            polygon_colour_buffer.append(_poly_col_buf(-nn))
-                            idx += 1
-                        else:
-                            var diff = (cell_world_pos - line._info[idx - 1]["base_pos"]).normalized().round()
-                            var nn := Vector2i.DOWN if diff.x > 0 else Vector2i.UP
-                            line._info.append({"base_pos": cell_world_pos, "normal": nn})
-                            polygon_colour_buffer.append(_poly_col_buf(-nn))
-                            idx += 1
-                    else:
-                        line._info.append({"base_pos": cell_world_pos, "normal": normal})
-                        polygon_colour_buffer.append(_poly_col_buf(normal))
-                        idx += 1
+            for point in line.points:
+                var cell_pos := _map.local_to_map(_map.to_local(point))
+                var world_cell_pos := _map.to_global(_map.map_to_local(cell_pos))
+                var normal := Vector2i((point - world_cell_pos).normalized().round())
+                line._info.append({"base_pos": world_cell_pos, "normal": normal})
+                polygon_colour_buffer.append(_poly_col_buf(normal))
+            line.init_wobblyness()
 
             if i == 0:
-                line.init_wobblyness(false)
-                # var points := Geometry2D.offset_polyline(line.points, 1.0)[0]
-                # polygon
-                polygon_colour_buffer.append(polygon_colour_buffer[0])
                 var polygon := Polygon2D.new()
                 _polygons.add_child(polygon)
                 if Engine.is_editor_hint():
@@ -250,12 +127,9 @@ func _generate_zones() -> void:
                 mat.shader = polygon_shader
                 polygon.material = mat
 
-                # collision
-                # print(touched_partition)
                 var enclosing_cell := _map.local_to_map(_map.to_local(_enclosing_partition_marker.global_position))
                 var enclosing_partition := _cell_to_partition[enclosing_cell]
 
-                # if touched_partition != enclosing_partition:
                 var static_body := StaticBody2D.new()
                 _collision_infos.add_child(static_body)
                 if Engine.is_editor_hint():
@@ -265,16 +139,13 @@ func _generate_zones() -> void:
                 static_body.add_child(collision_polygon)
                 if Engine.is_editor_hint():
                     collision_polygon.owner = get_tree().edited_scene_root
-                collision_polygon.polygon = polygon.polygon.slice(0, -1)
+                collision_polygon.polygon = Geometry2D.offset_polyline(og_polyline, 2.0)[0]
                 if touched_partition == enclosing_partition:
                     collision_polygon.build_mode = CollisionPolygon2D.BUILD_SEGMENTS
-            
-            line.init_wobblyness(true)
 
 
 func _poly_col_buf(normal: Vector2i) -> Color:
     var unorm := Vector2(normal).normalized()
-    # unorm.y *= -1.0
     unorm = (unorm + Vector2.ONE) * 0.5
     return Color(unorm.x, unorm.y, 0.0, 0.0)
 
@@ -299,7 +170,12 @@ func _trace(start: Vector2i, enter: Vector2i) -> Array[Vector2i]:
     var current := enter
     var previous := start
     var step := 0
-    while step == 0 or pivot != start:
+
+    # TODO(calco): we'll accept imperfect here cuz i dont want to bother more.
+    var times_visited_start := 0
+    # while step == 0 or times_visited_start < 1 and step < 100000:
+    while step == 0 or pivot != start and step < 100000:
+        times_visited_start += int(pivot == start and step != 0)
         step += 1
         var n := _get_neighbourhood(current - pivot)
         for off in n:
@@ -326,7 +202,7 @@ func _get_neighbourhood(diff: Vector2i) -> Array[Vector2i]:
     ]
 
     var idx := a.find(diff)
-    assert(idx != -1, "what the fuck.")
+    assert(idx != -1, "what the fuck. ( " + str(diff) + ") ")
     var b: Array[Vector2i] = []
 
     b.append_array(a.slice(idx + 1))
