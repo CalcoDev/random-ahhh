@@ -29,7 +29,7 @@ shader = ExtResource("6_84oh5")
 shader_parameter/u_tex = ExtResource("7_84oh5")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(3, 3)
-shader_parameter/u_offset = Vector2(-0.501387, 0.253758)
+shader_parameter/u_offset = Vector2(0.308497, -0.382493)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_yfp4n"]
 frequency = 0.0122
@@ -45,14 +45,14 @@ shader = ExtResource("9_5c5y4")
 shader_parameter/u_tex = ExtResource("10_wgbeu")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(2.5, 2.5)
-shader_parameter/u_offset = Vector2(-0.487761, 0.256776)
+shader_parameter/u_offset = Vector2(0.325646, -0.366107)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rxmmv"]
 shader = ExtResource("11_ng5rc")
 shader_parameter/u_tex = ExtResource("12_rxmmv")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(2, 2)
-shader_parameter/u_offset = Vector2(-0.465051, 0.261806)
+shader_parameter/u_offset = Vector2(0.354228, -0.338797)
 
 [sub_resource type="Gradient" id="Gradient_v4b4c"]
 offsets = PackedFloat32Array(0, 0.555838)
@@ -180,9 +180,10 @@ position = Vector2(23, 295)
 [node name="EnclosingPartitionMarker" type="Marker2D" parent="."]
 position = Vector2(-7, -8)
 
-[node name="Player" parent="." node_paths=PackedStringArray("kcam") instance=ExtResource("13_yfp4n")]
+[node name="Player" parent="." node_paths=PackedStringArray("kcam", "bullet_node") instance=ExtResource("13_yfp4n")]
 position = Vector2(120, 120)
 kcam = NodePath("KCamera")
+bullet_node = NodePath("../Bullets")
 dash_speed = 30.0
 dash_trail_color = Color(1, 1, 1, 1)
 _start_weapon = ExtResource("14_o4cj8")
@@ -210,3 +211,5 @@ offset_top = -237.0
 offset_right = 237.0
 offset_bottom = 237.0
 color = Color(0, 0, 0, 1)
+
+[node name="Bullets" type="Node2D" parent="."]

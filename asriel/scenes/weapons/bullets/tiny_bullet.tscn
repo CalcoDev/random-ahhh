@@ -1,0 +1,50 @@
+[gd_scene load_steps=9 format=3 uid="uid://cu46qm5i0od3u"]
+
+[ext_resource type="Texture2D" uid="uid://bgqvirqu285nr" path="res://asriel/assets/weapons/bullets/tiny_bullet.png" id="1_1yp22"]
+[ext_resource type="Script" uid="uid://cnrfrmj823hk3" path="res://asriel/scenes/weapons/bullets/bullet.gd" id="1_v0lj5"]
+[ext_resource type="Shader" uid="uid://dfmenyqxgjoh2" path="res://asriel/shaders/downwell/downwell_trail.gdshader" id="3_ekc3j"]
+[ext_resource type="Script" uid="uid://dcy5t1gti4kd1" path="res://asriel/scripts/downwell_trail.gd" id="3_orx6p"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_knx5k"]
+shader = ExtResource("3_ekc3j")
+shader_parameter/u_angle = -0.77159
+
+[sub_resource type="Gradient" id="Gradient_v0lj5"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.272727)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_orx6p"]
+gradient = SubResource("Gradient_v0lj5")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.518704)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1yp22"]
+radius = 2.0
+height = 6.0
+
+[node name="TinyBullet" type="CharacterBody2D" node_paths=PackedStringArray("trail")]
+collision_layer = 8
+collision_mask = 11
+script = ExtResource("1_v0lj5")
+trail = NodePath("Sprite2D/DownwellTrail")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -1)
+texture = ExtResource("1_1yp22")
+
+[node name="DownwellTrail" type="Sprite2D" parent="Sprite2D"]
+show_behind_parent = true
+visibility_layer = 0
+z_index = -1
+material = SubResource("ShaderMaterial_knx5k")
+texture = SubResource("GradientTexture2D_orx6p")
+script = ExtResource("3_orx6p")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, -1)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_1yp22")
+
+[node name="Line2D" type="Line2D" parent="."]

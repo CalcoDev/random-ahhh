@@ -1,10 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://b7em7yhf24iai"]
+[gd_scene load_steps=30 format=3 uid="uid://b7em7yhf24iai"]
 
 [ext_resource type="Texture2D" uid="uid://pjhby1vbtk4c" path="res://asriel/assets/player/player_idle.png" id="1_1fbl4"]
 [ext_resource type="Script" uid="uid://cp2e3a5614dxr" path="res://asriel/scenes/player/player.gd" id="1_20lan"]
 [ext_resource type="PackedScene" uid="uid://yjawrdrndg4m" path="res://asriel/scenes/player/vfx/dash_enter_particles.tscn" id="2_7i061"]
 [ext_resource type="Texture2D" uid="uid://d03vsiudnphv3" path="res://asriel/assets/player/player_run.png" id="2_20lan"]
 [ext_resource type="Texture2D" uid="uid://djd0lyysnwjby" path="res://asriel/assets/player/player_dash.png" id="2_xccgt"]
+[ext_resource type="Texture2D" uid="uid://16hax10kg0qa" path="res://asriel/assets/player/player_throw.png" id="6_ubewd"]
+[ext_resource type="Texture2D" uid="uid://dw2ifs3a1lw0l" path="res://asriel/assets/player/player_throw_motion.png" id="7_t8knr"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nfrcg"]
 atlas = ExtResource("2_xccgt")
@@ -45,6 +47,46 @@ region = Rect2(88, 0, 22, 12)
 [sub_resource type="AtlasTexture" id="AtlasTexture_pkb5f"]
 atlas = ExtResource("2_20lan")
 region = Rect2(110, 0, 22, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8knr"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(0, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6d5ja"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(24, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_prses"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(48, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36get"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(72, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hmgur"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(96, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fks4k"]
+atlas = ExtResource("6_ubewd")
+region = Rect2(120, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qwon1"]
+atlas = ExtResource("7_t8knr")
+region = Rect2(72, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fb5hr"]
+atlas = ExtResource("7_t8knr")
+region = Rect2(96, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgc4p"]
+atlas = ExtResource("7_t8knr")
+region = Rect2(24, 0, 24, 18)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_75t4d"]
+atlas = ExtResource("7_t8knr")
+region = Rect2(48, 0, 24, 18)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_nfrcg"]
 animations = [{
@@ -92,25 +134,81 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t8knr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6d5ja")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_prses")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36get")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hmgur")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fks4k")
+}],
+"loop": false,
+"name": &"throw",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qwon1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fb5hr")
+}],
+"loop": false,
+"name": &"throw_finish",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgc4p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75t4d")
+}],
+"loop": false,
+"name": &"throw_prepare",
+"speed": 0.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_75t4d")
+}],
+"loop": true,
+"name": &"throw_prepared_idle",
+"speed": 5.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1fbl4"]
 radius = 5.0
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("anim", "_dash_trail", "_weapon_hold_spot")]
+collision_layer = 4
 script = ExtResource("1_20lan")
 anim = NodePath("AnimatedSprite2D")
 _dash_trail = NodePath("DashTrail")
+dash_duration = 0.3
 dash_speed = 50.0
 dash_trail_spawn_time = 0.02
-dash_trail_duration = 0.3
+dash_trail_duration = 0.45
 dash_trail_color = Color(0.265714, 0.350667, 0.603696, 1)
 dash_enter_vfx = ExtResource("2_7i061")
 _weapon_hold_spot = NodePath("WeaponHoldSpot/Marker2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
 sprite_frames = SubResource("SpriteFrames_nfrcg")
-animation = &"idle"
+animation = &"throw_finish"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

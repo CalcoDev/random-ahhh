@@ -4,6 +4,27 @@ extends Node2D
 @export var use_cooldown: float = 0.3
 @export var hold_downable: bool = true
 
+@export var bullet_prefab: PackedScene
+
+@export var fire_point: Marker2D
+@export var shoot_vfx: PackedScene
+
+@export_group("Shake Settings")
+@export var shake_freq: float = 10.0
+@export var shake_intensity: float = 5.0
+@export var shake_duration: float = 0.09
+
+@export var recoil_intensity_range: Vector2 = Vector2(10, 30)
+@export var recoil_shake: float = 10.0
+@export var recoil_duration: float = 0.2
+
+@export_group("Bullet Settings")
+@export var bullets_per_shot: int = 1
+@export var bullet_spread: float = 30.0
+@export var bullet_speed_range: Vector2 = Vector2(50, 50)
+# @export var bullet_max_spread_range: Vector2 = Vector2(0.0, 45.0)
+
+@export_group("Display")
 @export var hold_position_min: Vector2 = Vector2.ZERO
 @export var hold_position_offset: Vector2 = Vector2.ZERO
 # true -> moves left and right but rotates around itself
@@ -21,16 +42,55 @@ extends Node2D
 var _use_timer: float = 0.0
 
 # try to use, accounting for use timer
-func try_use() -> bool:
+func can_use() -> bool:
     if _use_timer < 0.0:
-        use()
         return true
     return false
 
 # force a use
-func use() -> void:
-    print("used!")
+func use(params: Dictionary) -> Dictionary:
+    var d := {}
+
     _use_timer = use_cooldown
+
+    var vfx := shoot_vfx.instantiate() as Node2D
+    add_child(vfx)
+    vfx.top_level = true
+    vfx.global_position = fire_point.global_position
+
+    if "is_bullet" in params:
+        var dir = params["bullet_direction"]
+
+        d["recoil"] = true
+        d["recoil_intensity"] = _rand_range(recoil_intensity_range)
+        d["recoil_duration"] = recoil_duration
+        d["recoil_shake"] = recoil_shake
+        d["shake"] = true
+        
+        var bs := []
+        for i in bullets_per_shot:
+            var b := bullet_prefab.instantiate() as Bullet
+            for bbb in bs:
+                b.add_collision_exception_with(bbb)
+                bbb.add_collision_exception_with(b)
+            bs.append(b)
+            var angle: float = dir.angle() + deg_to_rad(randf_range(-bullet_spread, bullet_spread))
+            if params["is_first_bullet"] and i == 0:
+                angle = dir.angle()
+            b.rotation = angle
+            b.velocity = Vector2(cos(angle), sin(angle)) * _rand_range(bullet_speed_range)
+            b.is_player_bullet = true
+
+            params["parent_node"].add_child(b)
+            b.global_position = params["position"]
+
+            vfx.rotation = angle
+        
+    return d
 
 func _process(delta: float) -> void:
     _use_timer -= delta
+
+@warning_ignore("shadowed_global_identifier")
+func _rand_range(range: Vector2) -> float:
+    return randf_range(range.x, range.y)

@@ -95,6 +95,10 @@ fire_weapon={
 [layer_names]
 
 2d_render/layer_2="velocity_buffer"
+2d_physics/layer_1="level_geometry"
+2d_physics/layer_2="entities"
+2d_physics/layer_3="player"
+2d_physics/layer_4="bullets"
 
 [rendering]
 

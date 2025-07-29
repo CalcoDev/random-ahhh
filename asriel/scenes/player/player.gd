@@ -7,6 +7,8 @@ extends CharacterBody2D
 @export var anim: AnimatedSprite2D
 @export var _dash_trail: Node2D
 
+@export var bullet_node: Node
+
 @export_group("Movement")
 @export var max_speed: float = 200.0
 @export var acceleration: float = 800.0 * 2.0
@@ -45,18 +47,56 @@ func _ready() -> void:
     if _start_weapon:
         _weapon = _start_weapon.instantiate()
         _weapon_hold_spot.add_child(_weapon)
+        _is_ready_to_throw = false
 
-# var _weapon_bob_offset := Vector2.ZERO
-# var _interp_vel := Vector2.ZERO
-# var _random := {}
+        anim.animation_finished.connect(_weapon_animation_finished)
+
+        # anim.sprite_frames.set_animation_speed(&"throw_prepare", weapon.use_cooldown)
+        anim.sprite_frames.set_animation_speed(&"throw_prepare", float(anim.sprite_frames.get_frame_count(&"throw_prepare")) / _weapon.use_cooldown)
+        anim.sprite_frames.set_animation_speed(&"throw_finish", float(anim.sprite_frames.get_frame_count(&"throw_finish")) / _weapon.use_cooldown)
+        # print(anim.sprite_frames.get_animation_speed(&"throw_prepare"))
+        anim.play(&"throw_prepare")
+
 var __vel := Vector2.ZERO
+
+var _is_throwing := false
+
+var _is_ready_to_throw := false
+
+func _weapon_animation_finished() -> void:
+    if anim.animation == &"throw":
+        anim.stop()
+        _is_throwing = false
+    elif anim.animation == &"throw_prepare":
+        _is_ready_to_throw = true
+    elif anim.animation == &"throw_finished":
+        pass
+
+var _weapon_recoil_offset := 0.0
+
 func _process(delta: float) -> void:
     var inp := InputManager.data.move_vec
 
     if _weapon:
-        var key := InputManager.data.fire_weapon
-        if key.pressed or (_weapon.hold_downable and key.held):
-            _weapon.try_use()
+        if not is_dashing:
+            var key := InputManager.data.fire_weapon
+            if key.pressed or (_weapon.hold_downable and key.held):
+                if _is_ready_to_throw and _weapon.can_use():
+                    var d := _weapon.use({
+                        "is_bullet": true,
+                        "position": global_position,
+                        "bullet_direction": (InputManager.data.mouse_pos - global_position).normalized(),
+                        "is_first_bullet": key.held_time > 0.1,
+                        "parent_node": bullet_node
+                    })
+                    if d["shake"]:
+                        kcam.shake_noise(_weapon.shake_freq, _weapon.shake_intensity, _weapon.shake_duration, true, kcam.process_callback)
+                    if d["recoil"]:
+                        _weapon_recoil_offset = d["recoil_intensity"]
+                        # _weapon.get_child(0).get_child(0).position.x = _weapon_recoil_offset
+                    anim.play(&"throw_finish")
+                    _is_ready_to_throw = false
+                    _is_throwing = true
 
         var parent := _weapon_hold_spot.get_parent() as Node2D
 
@@ -64,6 +104,7 @@ func _process(delta: float) -> void:
         var vp_size := vp.get_visible_rect().size
         var mp_normalised := ((vp.get_mouse_position() - vp_size * 0.5) / vp_size * 2.0).rotated(-parent.rotation)
 
+        var w_pos := Vector2.ZERO
         if _weapon.rotate_pivot_self:
             if inp.x > 0.0:
                 parent.scale.x = 1.0
@@ -73,16 +114,18 @@ func _process(delta: float) -> void:
             parent.rotation = (InputManager.data.mouse_pos - parent.global_position).angle()
 
             var mouse_offset := mp_normalised * (_weapon.hold_position_offset + _weapon.hold_position_min)
-            _weapon.position = mouse_offset
+            w_pos = mouse_offset
             
             if parent.rotation < -PI / 2.0 or parent.rotation > PI / 2.0:
-                _weapon.get_child(0).flip_v = true
+                _weapon.get_child(0).get_child(0).flip_v = true
             else:
-                _weapon.get_child(0).flip_v = false
+                _weapon.get_child(0).get_child(0).flip_v = false
+        _weapon.position = w_pos
 
         var elapsed_time := Time.get_ticks_msec() / 1000.0 * _weapon.bob_freq * 2.0
         
-        var inverse_mouse_mult := pow((1.0 - mp_normalised.length()), 1)
+        # var inverse_mouse_mult := pow((1.0 - mp_normalised.length()), 0.5)
+        var inverse_mouse_mult := 1.0 - pow(mp_normalised.length(), 3.0)
 
         var bob_offset := (Vector2.DOWN * sin(elapsed_time) * _weapon.bob_strength / 2.0) * inverse_mouse_mult
 
@@ -91,25 +134,39 @@ func _process(delta: float) -> void:
 
         var target_vel := self.velocity.normalized() * self.velocity.length_squared() / (max_speed * max_speed)
         __vel = __vel.lerp(target_vel, delta * 2.0)
-        var vel_off := 4.0 * _weapon.bob_vel_delay *  __vel
+        var vel_off := 8.0 * _weapon.bob_vel_delay *  __vel
         var c := _weapon.get_child(0)
         c.position = c.position.lerp(-parent.scale.y * vel_off.rotated(-parent.rotation), delta * 3.0)
 
-    if Input.is_action_just_pressed("dbg"):
-        kcam.shake_spring(Vector2.RIGHT * 200, 200.0, 1.0, kcam.process_callback)
-    
+        _weapon_recoil_offset = lerp(_weapon_recoil_offset, 0.0, 2.0 * delta)
+        var cc := c.get_child(0)
+        cc.position.x = _weapon_recoil_offset
+
     if is_dashing:
-        anim.play("dash")
+        anim.play(&"dash")
+    elif anim.is_playing() and anim.animation in [&"throw_prepare", &"throw_finish", &"throw"]:
+        pass
+    elif _weapon != null and not _is_ready_to_throw:
+        anim.play(&"throw_prepare")
+    elif inp.length_squared() > 0.01:
+        anim.play(&"run")
     else:
-        if inp.length_squared() > 0.01:
-            anim.play("run")
-            if inp.x > 0.0:
-                anim.flip_h = false
-                # _weapon_hold_spot.scale.x = -1.0
-            else:
-                anim.flip_h = true
+        var idle_anim := &"idle"
+        if _weapon != null and _is_ready_to_throw:
+            idle_anim = &"throw_prepared_idle"
+        anim.play(idle_anim)
+        
+    if inp.length_squared() > 0.01:
+        if inp.x > 0.0:
+            anim.flip_h = false
         else:
-            anim.play("idle")
+            anim.flip_h = true
+    else:
+        var angle := (InputManager.data.mouse_pos - global_position).angle()
+        if angle < -PI / 2.0 or angle > PI / 2.0:
+            anim.flip_h = true
+        else:
+            anim.flip_h = false
     
     if not is_dashing and _dash_timer < 0.0 and InputManager.data.dash.pressed:
         _start_dash()
