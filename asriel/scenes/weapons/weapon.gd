@@ -7,7 +7,6 @@ extends Node2D
 @export var bullet_prefab: PackedScene
 
 @export var fire_point: Marker2D
-@export var shoot_vfx: PackedScene
 
 @export_group("Shake Settings")
 @export var shake_freq: float = 10.0
@@ -53,11 +52,6 @@ func use(params: Dictionary) -> Dictionary:
 
     _use_timer = use_cooldown
 
-    var vfx := shoot_vfx.instantiate() as Node2D
-    add_child(vfx)
-    vfx.top_level = true
-    vfx.global_position = fire_point.global_position
-
     if "is_bullet" in params:
         var dir = params["bullet_direction"]
 
@@ -66,6 +60,15 @@ func use(params: Dictionary) -> Dictionary:
         d["recoil_duration"] = recoil_duration
         d["recoil_shake"] = recoil_shake
         d["shake"] = true
+
+        d["sparks"] = true
+        d["spark_count"] = 4
+        d["spark_pos"] = fire_point.global_position
+        d["spark_size"] = Vector2(5, 2)
+        d["spark_angle"] = dir.angle()
+        d["spark_angle_random"] = randf() * PI / 5.0
+        d["spark_speed"] = 500
+        d["spark_lifetime"] = 0.25
         
         var bs := []
         for i in bullets_per_shot:
@@ -84,7 +87,7 @@ func use(params: Dictionary) -> Dictionary:
             params["parent_node"].add_child(b)
             b.global_position = params["position"]
 
-            vfx.rotation = angle
+            # vfx.rotation = angle
         
     return d
 

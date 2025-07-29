@@ -22,4 +22,7 @@ func _physics_process(_delta: float) -> void:
         if other is Bullet and other.is_player_bullet:
             add_collision_exception_with(other)
         else:
+            var sparks: SparksRenderer = get_tree().get_first_node_in_group(&"sparks")
+            for i in 4:
+                sparks.spawn_spark(coll.get_position(), Vector2(3.0, 1.5), (-v).angle(), 10, 0.3)
             queue_free()

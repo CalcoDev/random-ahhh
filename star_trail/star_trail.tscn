@@ -7,12 +7,12 @@
 [ext_resource type="Script" uid="uid://btdxg0wlnsjpu" path="res://star_trail/scripts/velocity_texture.gd" id="4_7h38h"]
 [ext_resource type="Shader" uid="uid://qreo4wcl5bcl" path="res://star_trail/shaders/velocity_texture_simulation.gdshader" id="5_7egne"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_dtfqr"]
-viewport_path = NodePath("VelocityTexture/VelocityTextureB")
+[sub_resource type="ViewportTexture" id="ViewportTexture_teknk"]
+viewport_path = NodePath("VelocityTexture/VelocityTextureA")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rhg1u"]
 shader = ExtResource("1_teknk")
-shader_parameter/u_obtained_tex = SubResource("ViewportTexture_dtfqr")
+shader_parameter/u_obtained_tex = SubResource("ViewportTexture_teknk")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_teknk"]
 shader = ExtResource("2_7egne")
@@ -29,8 +29,8 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0, 0)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_teknk"]
-viewport_path = NodePath("VelocityTexture/VelocityTextureA")
+[sub_resource type="ViewportTexture" id="ViewportTexture_dtfqr"]
+viewport_path = NodePath("VelocityTexture/VelocityTextureB")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_gye1v"]
 viewport_path = NodePath("VelocityTexture/TemporaryVelocityTexture")
@@ -38,7 +38,7 @@ viewport_path = NodePath("VelocityTexture/TemporaryVelocityTexture")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7egne"]
 shader = ExtResource("4_7egne")
 shader_parameter/u_temp_velocity_tex = SubResource("ViewportTexture_gye1v")
-shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_teknk")
+shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_dtfqr")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_rhg1u"]
 viewport_path = NodePath("VelocityTexture/VelocityBlitterPass")
@@ -46,13 +46,13 @@ viewport_path = NodePath("VelocityTexture/VelocityBlitterPass")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dtfqr"]
 shader = ExtResource("5_7egne")
 shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_rhg1u")
-shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.00694444)
+shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.0160639)
 shader_parameter/u_prev_velocity_tex_texel_size = Vector2(0.00416667, 0.00416667)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gye1v"]
 shader = ExtResource("5_7egne")
 shader_parameter/u_prev_velocity_tex = SubResource("ViewportTexture_rhg1u")
-shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.0186354)
+shader_parameter/u_sim_params = Vector4(70, 3, 1, 0.00694444)
 shader_parameter/u_prev_velocity_tex_texel_size = Vector2(0.00416667, 0.00416667)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_q4248"]
@@ -77,7 +77,7 @@ offset_bottom = 45.0
 light_mask = 0
 visibility_layer = 2
 material = SubResource("ShaderMaterial_teknk")
-position = Vector2(183, 96)
+position = Vector2(85, 143)
 texture = SubResource("GradientTexture2D_7egne")
 script = ExtResource("2_mj8le")
 max_speed = 1.0
@@ -127,7 +127,6 @@ canvas_cull_mask = 4293918721
 size = Vector2i(240, 240)
 
 [node name="ColorRect" type="ColorRect" parent="VelocityTexture/VelocityTextureA"]
-visible = false
 material = SubResource("ShaderMaterial_dtfqr")
 custom_minimum_size = Vector2(240, 240)
 offset_right = 40.0
@@ -145,6 +144,7 @@ canvas_cull_mask = 4293918721
 size = Vector2i(240, 240)
 
 [node name="ColorRect" type="ColorRect" parent="VelocityTexture/VelocityTextureB"]
+visible = false
 material = SubResource("ShaderMaterial_gye1v")
 custom_minimum_size = Vector2(240, 240)
 offset_right = 40.0

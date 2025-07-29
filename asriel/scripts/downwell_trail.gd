@@ -54,7 +54,6 @@ func _process(delta: float) -> void:
 func _process_trail(p: float, sprite: Sprite2D) -> void:
     var norm_vel := _vel.length_squared() / (max_speed * max_speed)
     var base := Vector2(2.5, 1.2)
-    # var stretch := Vector2(3.5, 0.9)
     var stretch = base
     sprite.scale = base.lerp(stretch, norm_vel) * (1.0 - p)
 

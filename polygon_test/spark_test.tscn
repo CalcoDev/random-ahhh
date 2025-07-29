@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://caqi28q0ojhd5"]
+
+[ext_resource type="Script" uid="uid://d4axer71w6tps" path="res://polygon_test/spark_test.gd" id="1_886kp"]
+[ext_resource type="Script" uid="uid://celphnmtsqtkv" path="res://asriel/scripts/sparks/sparks_renderer.gd" id="2_no1sx"]
+
+[node name="SparkTest" type="Node2D" node_paths=PackedStringArray("sparks_renderer")]
+script = ExtResource("1_886kp")
+update_stuff = true
+sparks_renderer = NodePath("SparksRenderer")
+
+[node name="SparksRenderer" type="Node2D" parent="."]
+script = ExtResource("2_no1sx")

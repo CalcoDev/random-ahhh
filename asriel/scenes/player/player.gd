@@ -9,6 +9,10 @@ extends CharacterBody2D
 
 @export var bullet_node: Node
 
+@export var _downwell_lines: ColorRect
+
+@export var _sparks: SparksRenderer
+
 @export_group("Movement")
 @export var max_speed: float = 200.0
 @export var acceleration: float = 800.0 * 2.0
@@ -26,8 +30,6 @@ extends CharacterBody2D
 @export var dash_trail_duration: float = 0.15
 var _dash_trail_spawner_timer: float = 0.0
 @export var dash_trail_color: Color
-
-@export var dash_enter_vfx: PackedScene
 
 var is_dashing: bool = false
 var _dash_timer: float = 0.0
@@ -74,15 +76,21 @@ func _weapon_animation_finished() -> void:
 
 var _weapon_recoil_offset := 0.0
 
+var _downwell_lines_angle := 0.0
+
 func _process(delta: float) -> void:
     var inp := InputManager.data.move_vec
 
+    _downwell_lines_angle = lerp_angle(_downwell_lines_angle, InputManager.data.last_nonzero_move_vec.angle(), delta * 2.0)
+    _downwell_lines.material.set_shader_parameter("u_angle", _downwell_lines_angle)
+
     if _weapon:
+        var d := {}
         if not is_dashing:
             var key := InputManager.data.fire_weapon
             if key.pressed or (_weapon.hold_downable and key.held):
                 if _is_ready_to_throw and _weapon.can_use():
-                    var d := _weapon.use({
+                    d = _weapon.use({
                         "is_bullet": true,
                         "position": global_position,
                         "bullet_direction": (InputManager.data.mouse_pos - global_position).normalized(),
@@ -141,6 +149,10 @@ func _process(delta: float) -> void:
         _weapon_recoil_offset = lerp(_weapon_recoil_offset, 0.0, 2.0 * delta)
         var cc := c.get_child(0)
         cc.position.x = _weapon_recoil_offset
+
+        if "sparks" in d:
+            for i in d["spark_count"]:
+                _sparks.spawn_spark(d["spark_pos"], d["spark_size"], d["spark_angle"] + randf() * d["spark_angle_random"], d["spark_speed"], d["spark_lifetime"])
 
     if is_dashing:
         anim.play(&"dash")
@@ -244,12 +256,11 @@ func _start_dash() -> void:
     _dash_timer = dash_duration
     _dash_dir = InputManager.data.last_nonzero_move_vec
     _dash_trail_spawner_timer = 0.0
-
-    var vfx := dash_enter_vfx.instantiate() as GPUParticles2D
-    add_child(vfx)
-    vfx.global_position = self.global_position
-    vfx.one_shot = true
-    vfx.finished.connect(vfx.queue_free)
+    
+    _sparks.spawn_spark(global_position, Vector2(12.0, 6.0) / 2.0, _dash_dir.angle() + PI / 4.0, 500.0, 0.6)
+    _sparks.spawn_spark(global_position, Vector2(12.0, 6.0) / 2.0, _dash_dir.angle() + PI / 4.0 + PI, 500.0, 0.6)
+    for i in 8:
+        _sparks.spawn_spark(global_position, Vector2(4.0, 4.0), randf() * TAU, 200.0, 0.3)
 
     kcam.shake_spring(-_dash_dir * 200, 200.0, 10.0, kcam.process_callback)
     kcam.shake_noise(5, 5, 0.15, true, kcam.process_callback)
