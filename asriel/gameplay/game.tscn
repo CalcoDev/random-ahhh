@@ -19,47 +19,6 @@
 [ext_resource type="Script" uid="uid://bl6qhuj0vbvqi" path="res://asriel/scenes/camera/kcamera.gd" id="14_v4b4c"]
 [ext_resource type="Script" uid="uid://celphnmtsqtkv" path="res://asriel/scripts/sparks/sparks_renderer.gd" id="18_benky"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_benky"]
-viewport_path = NodePath("PolygonVP")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_v8xop"]
-shader = ExtResource("6_1x7wm")
-shader_parameter/u_polygon_tex = SubResource("ViewportTexture_benky")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_84oh5"]
-shader = ExtResource("6_84oh5")
-shader_parameter/u_tex = ExtResource("7_84oh5")
-shader_parameter/u_aspect_ratio = 1.0
-shader_parameter/u_tiling = Vector2(3, 3)
-shader_parameter/u_offset = Vector2(0.542215, -0.00914127)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_yfp4n"]
-frequency = 0.0122
-fractal_type = 3
-fractal_lacunarity = 0.875
-fractal_gain = 1.525
-fractal_weighted_strength = 0.35
-fractal_ping_pong_strength = 2.25
-domain_warp_type = 1
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wgbeu"]
-shader = ExtResource("9_5c5y4")
-shader_parameter/u_tex = ExtResource("10_wgbeu")
-shader_parameter/u_aspect_ratio = 1.0
-shader_parameter/u_tiling = Vector2(2.5, 2.5)
-shader_parameter/u_offset = Vector2(0.535128, -0.0105331)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rxmmv"]
-shader = ExtResource("11_ng5rc")
-shader_parameter/u_tex = ExtResource("12_rxmmv")
-shader_parameter/u_aspect_ratio = 1.0
-shader_parameter/u_tiling = Vector2(2, 2)
-shader_parameter/u_offset = Vector2(0.523317, -0.0128527)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_benky"]
-shader = ExtResource("13_5f8k1")
-shader_parameter/u_angle = 0.0
-
 [sub_resource type="Gradient" id="Gradient_v4b4c"]
 offsets = PackedFloat32Array(0, 0.555838)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -96,6 +55,47 @@ shader = ExtResource("13_ufp2w")
 shader_parameter/u_dreamblock_tex = SubResource("ViewportTexture_v306m")
 shader_parameter/u_mask = SubResource("ViewportTexture_axkm0")
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_benky"]
+viewport_path = NodePath("PolygonVP")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v8xop"]
+shader = ExtResource("6_1x7wm")
+shader_parameter/u_polygon_tex = SubResource("ViewportTexture_benky")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_84oh5"]
+shader = ExtResource("6_84oh5")
+shader_parameter/u_tex = ExtResource("7_84oh5")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(3, 3)
+shader_parameter/u_offset = Vector2(0.558391, 0.286848)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yfp4n"]
+frequency = 0.0122
+fractal_type = 3
+fractal_lacunarity = 0.875
+fractal_gain = 1.525
+fractal_weighted_strength = 0.35
+fractal_ping_pong_strength = 2.25
+domain_warp_type = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wgbeu"]
+shader = ExtResource("9_5c5y4")
+shader_parameter/u_tex = ExtResource("10_wgbeu")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(2.5, 2.5)
+shader_parameter/u_offset = Vector2(0.542449, 0.270609)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rxmmv"]
+shader = ExtResource("11_ng5rc")
+shader_parameter/u_tex = ExtResource("12_rxmmv")
+shader_parameter/u_aspect_ratio = 1.0
+shader_parameter/u_tiling = Vector2(2, 2)
+shader_parameter/u_offset = Vector2(0.515877, 0.243543)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_benky"]
+shader = ExtResource("13_5f8k1")
+shader_parameter/u_angle = 0.0
+
 [node name="Game" type="Node2D"]
 light_mask = 0
 visibility_layer = 1048575
@@ -103,6 +103,51 @@ visibility_layer = 1048575
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 visible = false
 color = Color(0.0314697, 0.0234253, 0.147759, 1)
+
+[node name="Player" parent="." node_paths=PackedStringArray("kcam", "bullet_node", "_downwell_lines", "_sparks") instance=ExtResource("13_yfp4n")]
+position = Vector2(68, 132)
+kcam = NodePath("KCamera")
+bullet_node = NodePath("../Bullets")
+_downwell_lines = NodePath("../DownwellLinesVP/ColorRect")
+_sparks = NodePath("../SparksRenderer")
+dash_speed = 30.0
+dash_trail_color = Color(1, 1, 1, 1)
+_start_weapon = ExtResource("14_o4cj8")
+
+[node name="PointLight2D" type="PointLight2D" parent="Player"]
+scale = Vector2(1.85498, 1.76677)
+texture = SubResource("GradientTexture2D_yfp4n")
+
+[node name="KCamera" type="Camera2D" parent="Player"]
+script = ExtResource("14_v4b4c")
+
+[node name="DreamBlockBlit" type="ColorRect" parent="Player/KCamera"]
+visible = false
+z_index = 10
+material = SubResource("ShaderMaterial_yfp4n")
+custom_minimum_size = Vector2(480, 480)
+offset_left = -120.0
+offset_top = -120.0
+offset_right = -80.0
+offset_bottom = -80.0
+
+[node name="DownwellLinesBlit" type="ColorRect" parent="Player/KCamera"]
+z_index = 10
+material = SubResource("ShaderMaterial_4p8xr")
+custom_minimum_size = Vector2(480, 480)
+offset_left = -120.0
+offset_top = -120.0
+offset_right = -80.0
+offset_bottom = -80.0
+
+[node name="ColorRect" type="ColorRect" parent="Player/KCamera"]
+z_index = -7
+custom_minimum_size = Vector2(240, 240)
+offset_left = -237.0
+offset_top = -237.0
+offset_right = 237.0
+offset_bottom = 237.0
+color = Color(0, 0, 0, 1)
 
 [node name="RenderingV2" type="Node" parent="." node_paths=PackedStringArray("camera", "polygon_vp", "polygon_cutout_vp", "polygon_cutout")]
 script = ExtResource("1_xpmk6")
@@ -211,51 +256,6 @@ position = Vector2(23, 295)
 
 [node name="EnclosingPartitionMarker" type="Marker2D" parent="."]
 position = Vector2(-7, -8)
-
-[node name="Player" parent="." node_paths=PackedStringArray("kcam", "bullet_node", "_downwell_lines", "_sparks") instance=ExtResource("13_yfp4n")]
-position = Vector2(68, 132)
-kcam = NodePath("KCamera")
-bullet_node = NodePath("../Bullets")
-_downwell_lines = NodePath("../DownwellLinesVP/ColorRect")
-_sparks = NodePath("../SparksRenderer")
-dash_speed = 30.0
-dash_trail_color = Color(1, 1, 1, 1)
-_start_weapon = ExtResource("14_o4cj8")
-
-[node name="PointLight2D" type="PointLight2D" parent="Player"]
-scale = Vector2(1.85498, 1.76677)
-texture = SubResource("GradientTexture2D_yfp4n")
-
-[node name="KCamera" type="Camera2D" parent="Player"]
-script = ExtResource("14_v4b4c")
-
-[node name="DreamBlockBlit" type="ColorRect" parent="Player/KCamera"]
-z_index = 10
-material = SubResource("ShaderMaterial_yfp4n")
-custom_minimum_size = Vector2(480, 480)
-offset_left = -120.0
-offset_top = -120.0
-offset_right = -80.0
-offset_bottom = -80.0
-
-[node name="DownwellLinesBlit" type="ColorRect" parent="Player/KCamera"]
-visible = false
-z_index = 10
-material = SubResource("ShaderMaterial_4p8xr")
-custom_minimum_size = Vector2(480, 480)
-offset_left = -120.0
-offset_top = -120.0
-offset_right = -80.0
-offset_bottom = -80.0
-
-[node name="ColorRect" type="ColorRect" parent="Player/KCamera"]
-z_index = -7
-custom_minimum_size = Vector2(240, 240)
-offset_left = -237.0
-offset_top = -237.0
-offset_right = 237.0
-offset_bottom = 237.0
-color = Color(0, 0, 0, 1)
 
 [node name="Bullets" type="Node2D" parent="."]
 z_index = -1

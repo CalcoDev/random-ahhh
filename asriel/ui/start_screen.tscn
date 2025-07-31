@@ -1,0 +1,137 @@
+[gd_scene load_steps=8 format=3 uid="uid://cibny1o2hhnt8"]
+
+[ext_resource type="Script" uid="uid://dkfvgkijaj0fk" path="res://asriel/ui/text_wobbler.gd" id="1_5ftns"]
+[ext_resource type="Shader" uid="uid://dvwavaxlfyg7i" path="res://asriel/shaders/ui/ui_wavy_letter.gdshader" id="1_ya3f8"]
+[ext_resource type="FontFile" uid="uid://dn2kgba846o08" path="res://asriel/resources/fonts/Pixelout Personal Use Only.ttf" id="2_5ftns"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5ftns"]
+shader = ExtResource("1_ya3f8")
+shader_parameter/sine_amplitude = 0.023
+shader_parameter/sine_frequency = 2.454
+shader_parameter/sine_speed = 2.569
+shader_parameter/random_amplitude = 0.046
+shader_parameter/update_interval = 0.1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lpuvr"]
+viewport_path = NodePath("TextBackgroundVP")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ya3f8"]
+shader = ExtResource("1_ya3f8")
+shader_parameter/sine_amplitude = 0.056
+shader_parameter/sine_frequency = 10.0
+shader_parameter/sine_speed = 5.0
+shader_parameter/random_amplitude = 0.019
+shader_parameter/update_interval = 0.1
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_p3sgs"]
+viewport_path = NodePath("TextForegroundVP")
+
+[node name="StartScreen" type="Node2D"]
+
+[node name="TextForegroundVP" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+size = Vector2i(240, 240)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TextForegroundVP"]
+offset_top = 51.0
+offset_right = 240.0
+offset_bottom = 91.0
+theme_override_constants/separation = 7
+alignment = 1
+script = ExtResource("1_5ftns")
+
+[node name="A" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "A"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="S" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "S
+"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="R" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "R"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="I" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "I"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="E" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "E"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="L" type="RichTextLabel" parent="TextForegroundVP/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 46
+text = "L"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="TextBackgroundVP" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+size = Vector2i(240, 240)
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TextBackgroundVP"]
+offset_top = 31.73
+offset_right = 240.0
+offset_bottom = 71.73
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="?" type="RichTextLabel" parent="TextBackgroundVP/HBoxContainer2"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_5ftns")
+theme_override_font_sizes/normal_font_size = 111
+text = "?"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_5ftns")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_lpuvr")
+
+[node name="Foreground" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_ya3f8")
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("ViewportTexture_p3sgs")

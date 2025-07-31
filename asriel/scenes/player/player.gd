@@ -81,8 +81,8 @@ var _downwell_lines_angle := 0.0
 func _process(delta: float) -> void:
     var inp := InputManager.data.move_vec
 
-    _downwell_lines_angle = lerp_angle(_downwell_lines_angle, InputManager.data.last_nonzero_move_vec.angle(), delta * 2.0)
-    _downwell_lines.material.set_shader_parameter("u_angle", _downwell_lines_angle)
+    # _downwell_lines_angle = lerp_angle(_downwell_lines_angle, InputManager.data.last_nonzero_move_vec.angle(), delta * 2.0)
+    # _downwell_lines.material.set_shader_parameter("u_angle", _downwell_lines_angle)
 
     if _weapon:
         var d := {}
@@ -90,6 +90,7 @@ func _process(delta: float) -> void:
             var key := InputManager.data.fire_weapon
             if key.pressed or (_weapon.hold_downable and key.held):
                 if _is_ready_to_throw and _weapon.can_use():
+                    # _downwell_lines.material.set_shader_parameter("u_angle", (InputManager.data.mouse_pos - global_position).angle())
                     d = _weapon.use({
                         "is_bullet": true,
                         "position": global_position,

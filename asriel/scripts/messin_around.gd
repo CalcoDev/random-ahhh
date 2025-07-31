@@ -12,10 +12,13 @@ extends Node
         obliterate_children = false
         for child in _lines.get_children():
             _lines.remove_child(child)
+            child.queue_free()
         for child in _polygons.get_children():
             _polygons.remove_child(child)
+            child.queue_free()
         for child in _collision_infos.get_children():
             _collision_infos.remove_child(child)
+            child.queue_free()
 
 @export var polygon_shader: Shader
 
