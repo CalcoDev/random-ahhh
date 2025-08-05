@@ -79,7 +79,7 @@ func _generate_outline() -> void:
     var previous_ids: Dictionary[Vector2, Door] = {}
     for child: Door in $"Doors".get_children():
         if child.id != &"" and child.to_room and child._to_door_id != &"":
-            previous_ids[child.global_position] = child
+            previous_ids[child.position] = child
 
     if _doors:
         _doors.clear()
@@ -94,15 +94,16 @@ func _generate_outline() -> void:
             edge_tiles.erase_cell(tile)
 
             if data.get_custom_data("spawn_door"):
-                var door_pos := door_tiles.to_global(door_tiles.map_to_local(tile)) + door_tiles.tile_set.tile_size * 0.5
+                var global_door_pos := door_tiles.to_global(door_tiles.map_to_local(tile)) + door_tiles.tile_set.tile_size * 0.5
                 if door_data == &"left":
-                    door_pos.x -= door_tiles.tile_set.tile_size.x
-                if door_pos in previous_ids:
-                    new_doors.append(previous_ids[door_pos])
+                    global_door_pos.x -= door_tiles.tile_set.tile_size.x
+                var local_door_pos := to_local(global_door_pos)
+                if local_door_pos in previous_ids:
+                    new_doors.append(previous_ids[local_door_pos])
                 else:
-                    var door := Door.new()
+                    var door := preload("uid://5ej57o3nrqq2").instantiate() as Door
                     new_doors.append(door)
-                    door.global_position = door_pos
+                    door.position = local_door_pos
                     door.on_id_changed.connect(_handle_door_id_changed)
 
     for child: Door in $"Doors".get_children():
