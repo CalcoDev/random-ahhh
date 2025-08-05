@@ -1,8 +1,7 @@
-[gd_scene load_steps=30 format=3 uid="uid://b7em7yhf24iai"]
+[gd_scene load_steps=29 format=3 uid="uid://b7em7yhf24iai"]
 
 [ext_resource type="Texture2D" uid="uid://pjhby1vbtk4c" path="res://asriel/assets/player/player_idle.png" id="1_1fbl4"]
 [ext_resource type="Script" uid="uid://cp2e3a5614dxr" path="res://asriel/scenes/player/player.gd" id="1_20lan"]
-[ext_resource type="PackedScene" uid="uid://yjawrdrndg4m" path="res://asriel/scenes/player/vfx/dash_enter_particles.tscn" id="2_7i061"]
 [ext_resource type="Texture2D" uid="uid://d03vsiudnphv3" path="res://asriel/assets/player/player_run.png" id="2_20lan"]
 [ext_resource type="Texture2D" uid="uid://djd0lyysnwjby" path="res://asriel/assets/player/player_dash.png" id="2_xccgt"]
 [ext_resource type="Texture2D" uid="uid://16hax10kg0qa" path="res://asriel/assets/player/player_throw.png" id="6_ubewd"]
@@ -202,13 +201,12 @@ dash_speed = 50.0
 dash_trail_spawn_time = 0.02
 dash_trail_duration = 0.45
 dash_trail_color = Color(0.265714, 0.350667, 0.603696, 1)
-dash_enter_vfx = ExtResource("2_7i061")
 _weapon_hold_spot = NodePath("WeaponHoldSpot/Marker2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_nfrcg")
-animation = &"throw_finish"
+animation = &"throw_prepare"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -67,7 +67,7 @@ shader = ExtResource("6_84oh5")
 shader_parameter/u_tex = ExtResource("7_84oh5")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(3, 3)
-shader_parameter/u_offset = Vector2(0.558391, 0.286848)
+shader_parameter/u_offset = Vector2(0.538037, -0.205857)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_yfp4n"]
 frequency = 0.0122
@@ -83,14 +83,14 @@ shader = ExtResource("9_5c5y4")
 shader_parameter/u_tex = ExtResource("10_wgbeu")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(2.5, 2.5)
-shader_parameter/u_offset = Vector2(0.542449, 0.270609)
+shader_parameter/u_offset = Vector2(0.520985, -0.212421)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rxmmv"]
 shader = ExtResource("11_ng5rc")
 shader_parameter/u_tex = ExtResource("12_rxmmv")
 shader_parameter/u_aspect_ratio = 1.0
 shader_parameter/u_tiling = Vector2(2, 2)
-shader_parameter/u_offset = Vector2(0.515877, 0.243543)
+shader_parameter/u_offset = Vector2(0.492566, -0.223359)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_benky"]
 shader = ExtResource("13_5f8k1")

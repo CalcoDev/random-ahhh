@@ -175,10 +175,10 @@ func _trace(start: Vector2i, enter: Vector2i) -> Array[Vector2i]:
     var step := 0
 
     # TODO(calco): we'll accept imperfect here cuz i dont want to bother more.
-    var times_visited_start := 0
+    # var times_visited_start := 0
     # while step == 0 or times_visited_start < 1 and step < 100000:
     while step == 0 or pivot != start and step < 100000:
-        times_visited_start += int(pivot == start and step != 0)
+        # times_visited_start += int(pivot == start and step != 0)
         step += 1
         var n := _get_neighbourhood(current - pivot)
         for off in n:
