@@ -7,6 +7,8 @@ signal on_id_changed(old_id: StringName, door: Door)
 @export var id: StringName:
     set(value):
         var new_id := value.to_upper()
+        if get_parent() != null and get_parent().get_parent() != null:
+            print(get_parent().get_parent().name, "'s ID changed from ", id, " to ", new_id, "!")
         on_id_changed.emit(id, self)
         id = new_id
         name = "Door" + id
@@ -61,7 +63,7 @@ static var LINE_GRADIENT_FROM_COLOR := Color.BLUE
 static var LINE_GRADIENT_TO_COLOR := Color.GREEN
 const LINE_WIDTH := 2.0
 
-const DEBUG_VIEW_ENABLED := true
+const DEBUG_VIEW_ENABLED := false
 
 func _process(_delta: float) -> void:
     if Engine.is_editor_hint():

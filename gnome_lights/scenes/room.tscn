@@ -1,13 +1,41 @@
-[gd_scene load_steps=4 format=3 uid="uid://bf3ffhfncabpc"]
+[gd_scene load_steps=5 format=3 uid="uid://bf3ffhfncabpc"]
 
 [ext_resource type="Script" uid="uid://d0r57dgyyyh2r" path="res://gnome_lights/scripts/room.gd" id="1_ccted"]
 [ext_resource type="TileSet" uid="uid://dj0xoevfo5b3q" path="res://gnome_lights/resources/room_tileset.tres" id="2_h6yst"]
+[ext_resource type="Shader" uid="uid://buc3bs5fb6nkt" path="res://gnome_lights/shaders/room_lightcast_tiles.gdshader" id="3_h6yst"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_47glm"]
+shader = ExtResource("3_h6yst")
 
 [node name="Room" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_ccted")
+
+[node name="ColorViewport" type="SubViewport" parent="." groups=["room_dont_move"]]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_cull_mask = 4294443007
+
+[node name="LightMaskViewport" type="SubViewport" parent="." groups=["room_dont_move"]]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+canvas_cull_mask = 4294443008
+
+[node name="ColorTexture" type="TextureRect" parent="." groups=["room_dont_move"]]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LightMaskTexture" type="TextureRect" parent="." groups=["room_dont_move"]]
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="FloorTiles" type="TileMapLayer" parent="."]
 tile_set = ExtResource("2_h6yst")
@@ -18,6 +46,7 @@ tile_set = ExtResource("2_h6yst")
 
 [node name="EdgeTiles" type="TileMapLayer" parent="."]
 light_mask = 3
+z_index = 1
 tile_set = ExtResource("2_h6yst")
 
 [node name="DoorTiles" type="TileMapLayer" parent="."]
@@ -25,12 +54,15 @@ y_sort_enabled = true
 tile_set = ExtResource("2_h6yst")
 
 [node name="LightcastTiles" type="TileMapLayer" parent="."]
+light_mask = 2
+visibility_layer = 524288
+z_index = 10
 material = SubResource("ShaderMaterial_47glm")
 tile_set = ExtResource("2_h6yst")
 
-[node name="Doors" type="Node2D" parent="."]
+[node name="Doors" type="Node2D" parent="." groups=["room_dont_move"]]
 
-[node name="RoomArea" type="Area2D" parent="."]
+[node name="RoomArea" type="Area2D" parent="." groups=["room_dont_move"]]
 visible = false
 collision_layer = 128
 collision_mask = 0

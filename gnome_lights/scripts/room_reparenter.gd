@@ -13,6 +13,8 @@ func _wait_deferred() -> Signal:
     deferred_signal.emit.call_deferred()
     return deferred_signal
 
+var _room: Room
+
 var _parent: Node2D
 func _ready() -> void:
     _parent = get_parent()
@@ -25,6 +27,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
     if _parent:
         global_position = _parent.global_position
+        if _room:
+            global_position += _room.global_position
+    # print(global_position)
 
 func _handle_parent_exited() -> void:
     if is_inside_tree():
@@ -40,8 +45,9 @@ func _on_area_entered(other: Area2D) -> void:
     if room in _unallowed:
         return
     _unallowed[room] = true
-    on_enter_room.emit(room)
-    if room.add_entity(_parent):
+    if room.add_entity(_parent, _room.global_position if _room else Vector2.ZERO):
+        _room = room
+        on_enter_room.emit(room)
         await _parent.tree_entered
         await get_tree().process_frame
     _unallowed.erase(room)

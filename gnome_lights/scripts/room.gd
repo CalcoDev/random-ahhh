@@ -4,21 +4,59 @@ extends Node2D
 
 @export_tool_button("Generate Outline", "Callable") var generate_outline_action = _generate_outline
 
-@export var toggle_light: bool = false
-@export_tool_button("Toggle Setup", "Callable") var toggle_setup_action = _toggle_setup
+@export_tool_button("Viewports Editing Mode", "Callable") var setup_vp_edit_action = _setup_vp_edit
+@export_tool_button("Viewports Preview Mode", "Callable") var setup_vp_preview_action = _setup_vp_preview
 
-func _toggle_setup() -> void:
-    var on := not get_edge_tiles().visible
+const ROOM_DONT_MOVE_GROUP := &"room_dont_move"
 
-    # get_floor_tiles().visible = on
-    get_wall_tiles().visible = on
-    get_edge_tiles().visible = on
-    get_door_tiles().visible = on
-    get_lightcast_tiles().visible = on and toggle_light
+enum VP_SETUP_MODE {
+    Edit,
+    Preview
+}
 
-@export var test:= false:
-    set(value):
-        print(_doors)
+var _vp_setup_mode := VP_SETUP_MODE.Edit
+# var _vp_preview_offset := Vector2.ZERO
+var _vp_setup_data := {}
+
+func _setup_vp_edit() -> void:
+    var color_vp := get_color_vp()
+
+    for child in color_vp.get_children():
+        if child.is_in_group(ROOM_DONT_MOVE_GROUP):
+            continue
+        child.reparent(self)
+        if child is Node2D:
+            child.position = Vector2.ZERO
+    _vp_setup_mode = VP_SETUP_MODE.Edit
+    
+    get_lightcast_tiles().visible = _vp_setup_data.get("lightmask_visible", false)
+
+func _setup_vp_preview() -> void:
+    var color_vp := get_color_vp()
+    var lightmask_vp := get_lightmask_vp()
+
+    var polygon := get_room_area_polygon()
+    var aabb := _get_polygon_aabb(polygon)
+
+    color_vp.size = aabb.size
+    lightmask_vp.size = aabb.size
+
+    for child in get_children():
+        if child.is_in_group(ROOM_DONT_MOVE_GROUP):
+            continue
+        child.reparent(color_vp)
+        if child is Node2D:
+            child.position = Vector2.ZERO
+    _vp_setup_mode = VP_SETUP_MODE.Preview
+    
+    lightmask_vp.world_2d = color_vp.world_2d
+
+    get_color_tex().texture = color_vp.get_texture()
+    get_lightmask_tex().texture = lightmask_vp.get_texture()
+
+    var lightcast := get_lightcast_tiles()
+    _vp_setup_data["lightmask_visible"] = lightcast.visible
+    lightcast.visible = true
 
 var _doors: Dictionary[StringName, Door] = {}
 
@@ -30,6 +68,9 @@ func _ready() -> void:
         if child.id != &"":
             _doors[child.id] = child
         child.on_id_changed.connect(_handle_door_id_changed)
+    
+    if not Engine.is_editor_hint():
+        _setup_vp_preview()
 
 func _generate_outline() -> void:
     var floor_tiles :=  get_floor_tiles()
@@ -128,33 +169,56 @@ func _handle_door_id_changed(old_id: StringName, door: Door) -> void:
     else:
         _doors[door.id] = door
 
-func add_entity(node: Node2D) -> bool:
+func add_entity(node: Node2D, curr_room_offset: Vector2) -> bool:
     var entity_node := get_entity_node()
     if node.get_parent() == entity_node:
         return false
+    var offset := to_local(node.global_position + curr_room_offset)
+    node.tree_entered.connect(_set_entity_pos.bind(node, offset))
     node.call_deferred("reparent", entity_node)
     return true
 
+func _set_entity_pos(entity: Node2D, offset: Vector2) -> void:
+    entity.tree_entered.disconnect(_set_entity_pos.bind(entity, offset))
+    await get_tree().process_frame
+    entity.global_position = offset
+
+func get_color_tex() -> TextureRect:
+    return $"ColorTexture" as TextureRect
+
+func get_lightmask_tex() -> TextureRect:
+    return $"LightMaskTexture" as TextureRect
+
+func get_color_vp() -> SubViewport:
+    return $"ColorViewport" as SubViewport
+
+func get_lightmask_vp() -> SubViewport:
+    return $"LightMaskViewport" as SubViewport
+
 func get_entity_node() -> Node2D:
-    return $"Entities"
+    return ($"ColorViewport/Entities" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"Entities") as Node2D
 
 func get_room_area() -> Area2D:
+    # return ($"ColorViewport/RoomAreaa" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"RoomArea") as Area2D
     return $"RoomArea" as Area2D
 
+func get_room_area_polygon() -> PackedVector2Array:
+    return ($"ColorRect/RoomArea/CollisionPolygon2D" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"RoomArea/CollisionPolygon2D").polygon as PackedVector2Array
+
 func get_floor_tiles() -> TileMapLayer:
-    return $"FloorTiles" as TileMapLayer
+    return ($"ColorViewport/FloorTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"FloorTiles") as TileMapLayer
 
 func get_wall_tiles() -> TileMapLayer:
-    return $"WallTiles" as TileMapLayer
+    return ($"ColorViewport/WallTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"WallTiles") as TileMapLayer
 
 func get_door_tiles() -> TileMapLayer:
-    return $"DoorTiles" as TileMapLayer
+    return ($"ColorViewport/DoorTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"DoorTiles") as TileMapLayer
 
 func get_edge_tiles() -> TileMapLayer:
-    return $"EdgeTiles" as TileMapLayer
+    return ($"ColorViewport/EdgeTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"EdgeTiles") as TileMapLayer
 
 func get_lightcast_tiles() -> TileMapLayer:
-    return $"LightcastTiles" as TileMapLayer
+    return ($"ColorViewport/LightcastTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"LightcastTiles") as TileMapLayer
 
 func get_all_door_ids() -> Array[StringName]:
     var ids: Array[StringName] = []
@@ -205,6 +269,23 @@ func _get_edge_autotile(coords: Vector2i, map: TileMapLayer) -> Vector2i:
         atlas_coords = Vector2(0, 0)
     
     return atlas_coords
+
+func _get_polygon_aabb(polygon: PackedVector2Array) -> Rect2:
+    if polygon.size() == 0:
+        return Rect2(0, 0, 0, 0)
+    
+    var min_x = polygon[0].x
+    var max_x = polygon[0].x
+    var min_y = polygon[0].y
+    var max_y = polygon[0].y
+    
+    for vertex in polygon:
+        min_x = min(min_x, vertex.x)
+        max_x = max(max_x, vertex.x)
+        min_y = min(min_y, vertex.y)
+        max_y = max(max_y, vertex.y)
+    
+    return Rect2(min_x, min_y, max_x - min_x, max_y - min_y)
 
 #region Neighbourood Tracing Helpers
 
