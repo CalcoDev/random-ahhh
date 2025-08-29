@@ -6,6 +6,12 @@ extends CharacterBody2D
 @export var deceleration: float = 600.0 * 2.0
 @export var turn_speed: float = 900.0 * 2.0
 
+func _ready() -> void:
+    $"RoomReparenter".on_enter_room.connect(_handle_on_enter_room)
+
+func _handle_on_enter_room(room: Room) -> void:
+    RoomManager.get_instance(self).set_active_room(room)
+
 func _process(_delta: float) -> void:
     pass
 

@@ -5,6 +5,15 @@ extends Camera2D
 # signal on_shake_begin()
 # signal on_shake_end()
 
+const GROUP := &"kcamera_group"
+
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_ENTER_TREE:
+        add_to_group(GROUP)
+
+static func get_instance(node: Node) -> KCamera:
+    return node.get_tree().get_first_node_in_group(GROUP)
+
 var _shake_pos_offset := Vector2.ZERO:
     set(value):
         _shake_pos_offset = value

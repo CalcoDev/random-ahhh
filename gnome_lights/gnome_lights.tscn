@@ -1,35 +1,31 @@
-[gd_scene load_steps=13 format=4 uid="uid://ct74ejhiocjfp"]
+[gd_scene load_steps=14 format=4 uid="uid://ct74ejhiocjfp"]
 
+[ext_resource type="Script" uid="uid://dd1hfewkr0nqn" path="res://gnome_lights/scripts/room_manager.gd" id="1_mv4ff"]
 [ext_resource type="PackedScene" uid="uid://bf3ffhfncabpc" path="res://gnome_lights/scenes/room.tscn" id="1_w8mei"]
 [ext_resource type="Script" uid="uid://dq5ble5tbvqm6" path="res://gnome_lights/scripts/player.gd" id="3_emv2k"]
 [ext_resource type="PackedScene" uid="uid://5ej57o3nrqq2" path="res://gnome_lights/scenes/door.tscn" id="3_mv4ff"]
 [ext_resource type="Script" uid="uid://bl6qhuj0vbvqi" path="res://asriel/scenes/camera/kcamera.gd" id="4_vucwe"]
 [ext_resource type="Script" uid="uid://dxuh3yq88oc1q" path="res://gnome_lights/scripts/room_reparenter.gd" id="5_emv2k"]
+[ext_resource type="Script" uid="uid://bga6gr0vto5i0" path="res://gnome_lights/scripts/door_passer.gd" id="7_ojbya"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_emv2k"]
-viewport_path = NodePath("ColorViewport")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_mv4ff"]
-viewport_path = NodePath("LightMaskViewport")
-
-[sub_resource type="Gradient" id="Gradient_emv2k"]
+[sub_resource type="Gradient" id="Gradient_mv4ff"]
 interpolation_mode = 1
 offsets = PackedFloat32Array(0, 0.690078)
 colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_mv4ff"]
-gradient = SubResource("Gradient_emv2k")
+gradient = SubResource("Gradient_mv4ff")
 width = 16
 height = 16
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
-[sub_resource type="Gradient" id="Gradient_vucwe"]
+[sub_resource type="Gradient" id="Gradient_ojbya"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_emv2k"]
-gradient = SubResource("Gradient_vucwe")
+gradient = SubResource("Gradient_ojbya")
 width = 240
 height = 240
 fill = 1
@@ -39,9 +35,18 @@ fill_to = Vector2(0.5, 0)
 [sub_resource type="CircleShape2D" id="CircleShape2D_emv2k"]
 radius = 4.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_mv4ff"]
+radius = 5.0
+
 [node name="GnomeLights" type="Node2D"]
 
 [node name="ReparentHandler" type="Node2D" parent="." groups=["reparent_handler"]]
+
+[node name="RoomManager" type="Node" parent="." node_paths=PackedStringArray("player", "preview_lightcaster", "rooms")]
+script = ExtResource("1_mv4ff")
+player = NodePath("../Player")
+preview_lightcaster = NodePath("../Player/InsideLight")
+rooms = [NodePath("../RoomA"), NodePath("../RoomB"), NodePath("../RoomC")]
 
 [node name="RoomA" parent="." instance=ExtResource("1_w8mei")]
 position = Vector2(335, 86)
@@ -52,11 +57,8 @@ size = Vector2i(192, 144)
 [node name="LightMaskViewport" parent="RoomA" index="1"]
 size = Vector2i(192, 144)
 
-[node name="ColorTexture" parent="RoomA" index="2"]
-texture = SubResource("ViewportTexture_emv2k")
-
 [node name="LightMaskTexture" parent="RoomA" index="3"]
-texture = SubResource("ViewportTexture_mv4ff")
+visible = false
 
 [node name="FloorTiles" parent="RoomA" index="4"]
 tile_map_data = PackedByteArray("AAAAAAAAAAACAAAAAAAAAAEAAAACAAAAAAAAAAIAAAACAAAAAAAAAAMAAAACAAAAAAABAAMAAAACAAAAAAACAAMAAAACAAAAAAADAAMAAAACAAAAAAAEAAMAAAACAAAAAAAFAAMAAAACAAAAAAAGAAMAAAACAAAAAAAHAAMAAAACAAAAAAAIAAMAAAACAAAAAAAJAAMAAAACAAAAAAAKAAMAAAACAAAAAAALAAMAAAACAAAAAAALAAIAAAACAAAAAAALAAEAAAACAAAAAAALAAAAAAACAAAAAAAKAAAAAAACAAAAAAAJAAAAAAACAAAAAAAIAAAAAAACAAAAAAAHAAAAAAACAAAAAAAGAAAAAAACAAAAAAAFAAAAAAACAAAAAAAEAAAAAAACAAAAAAADAAAAAAACAAAAAAACAAAAAAACAAAAAAABAAAAAAACAAAAAAABAAEAAAACAAAAAAABAAIAAAACAAAAAAACAAIAAAACAAAAAAADAAIAAAACAAAAAAADAAEAAAACAAAAAAAEAAEAAAACAAAAAAAFAAEAAAACAAAAAAAGAAEAAAACAAAAAAAHAAEAAAACAAAAAAAIAAEAAAACAAAAAAAJAAEAAAACAAAAAAAIAAIAAAACAAAAAAAHAAIAAAACAAAAAAAGAAIAAAACAAAAAAACAAEAAAACAAAAAAAEAAIAAAACAAAAAAAFAAIAAAACAAAAAAAJAAIAAAACAAAAAAAKAAIAAAACAAAAAAAKAAEAAAACAAAAAAAEAAQAAAACAAAAAAAEAAUAAAACAAAAAAAEAAYAAAACAAAAAAAEAAcAAAACAAAAAAAEAAgAAAACAAAAAAAFAAgAAAACAAAAAAAGAAgAAAACAAAAAAAGAAcAAAACAAAAAAAHAAcAAAACAAAAAAAHAAYAAAACAAAAAAAHAAgAAAACAAAAAAAHAAUAAAACAAAAAAAHAAQAAAACAAAAAAAGAAQAAAACAAAAAAAGAAUAAAACAAAAAAAFAAYAAAACAAAAAAAFAAcAAAACAAAAAAAGAAYAAAACAAAAAAAFAAUAAAACAAAAAAAFAAQAAAACAAAAAAA=")
@@ -88,12 +90,14 @@ to_door_id = &"B"
 
 [node name="DoorC" parent="RoomA/Doors" index="2" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(128, 96)
+facing_dir = 3
 id = &"C"
 to_room = NodePath("../../../RoomC")
 to_door_id = &"B"
 
 [node name="DoorD" parent="RoomA/Doors" index="3" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(64, 112)
+facing_dir = 2
 id = &"D"
 to_room = NodePath("../../../RoomC")
 to_door_id = &"A"
@@ -106,13 +110,16 @@ light_mask = 3
 visibility_layer = 3
 
 [node name="RoomB" parent="." instance=ExtResource("1_w8mei")]
-position = Vector2(335, 11)
+position = Vector2(39, -130)
 
 [node name="ColorViewport" parent="RoomB" index="0"]
 size = Vector2i(400, 64)
 
 [node name="LightMaskViewport" parent="RoomB" index="1"]
 size = Vector2i(400, 64)
+
+[node name="LightMaskTexture" parent="RoomB" index="3"]
+visible = false
 
 [node name="FloorTiles" parent="RoomB" index="4"]
 tile_map_data = PackedByteArray("AAAAAAEAAAACAAAAAAAAAAIAAAACAAAAAAAAAAMAAAACAAAAAAABAAEAAAACAAAAAAABAAIAAAACAAAAAAABAAMAAAACAAAAAAACAAEAAAACAAAAAAACAAIAAAACAAAAAAACAAMAAAACAAAAAAADAAEAAAACAAAAAAADAAIAAAACAAAAAAADAAMAAAACAAAAAAAEAAEAAAACAAAAAAAEAAIAAAACAAAAAAAEAAMAAAACAAAAAAAFAAEAAAACAAAAAAAFAAIAAAACAAAAAAAFAAMAAAACAAAAAAAGAAEAAAACAAAAAAAGAAIAAAACAAAAAAAGAAMAAAACAAAAAAAHAAEAAAACAAAAAAAHAAIAAAACAAAAAAAHAAMAAAACAAAAAAAIAAEAAAACAAAAAAAIAAIAAAACAAAAAAAIAAMAAAACAAAAAAAJAAEAAAACAAAAAAAJAAIAAAACAAAAAAAJAAMAAAACAAAAAAAKAAEAAAACAAAAAAAKAAIAAAACAAAAAAAKAAMAAAACAAAAAAALAAEAAAACAAAAAAALAAIAAAACAAAAAAALAAMAAAACAAAAAAAMAAEAAAACAAAAAAAMAAIAAAACAAAAAAAMAAMAAAACAAAAAAANAAEAAAACAAAAAAANAAIAAAACAAAAAAANAAMAAAACAAAAAAAOAAEAAAACAAAAAAAOAAIAAAACAAAAAAAOAAMAAAACAAAAAAAPAAEAAAACAAAAAAAPAAIAAAACAAAAAAAPAAMAAAACAAAAAAAQAAEAAAACAAAAAAAQAAIAAAACAAAAAAAQAAMAAAACAAAAAAARAAEAAAACAAAAAAARAAIAAAACAAAAAAARAAMAAAACAAAAAAASAAEAAAACAAAAAAASAAIAAAACAAAAAAASAAMAAAACAAAAAAATAAEAAAACAAAAAAATAAIAAAACAAAAAAATAAMAAAACAAAAAAAUAAEAAAACAAAAAAAUAAIAAAACAAAAAAAUAAMAAAACAAAAAAAVAAEAAAACAAAAAAAVAAIAAAACAAAAAAAVAAMAAAACAAAAAAAWAAEAAAACAAAAAAAWAAIAAAACAAAAAAAWAAMAAAACAAAAAAAXAAEAAAACAAAAAAAXAAIAAAACAAAAAAAXAAMAAAACAAAAAAAYAAEAAAACAAAAAAAYAAIAAAACAAAAAAAYAAMAAAACAAAAAAAAAAAAAAACAAAAAAABAAAAAAACAAAAAAACAAAAAAACAAAAAAADAAAAAAACAAAAAAAEAAAAAAACAAAAAAAFAAAAAAACAAAAAAAGAAAAAAACAAAAAAAHAAAAAAACAAAAAAAIAAAAAAACAAAAAAAJAAAAAAACAAAAAAAKAAAAAAACAAAAAAALAAAAAAACAAAAAAAMAAAAAAACAAAAAAANAAAAAAACAAAAAAAOAAAAAAACAAAAAAAPAAAAAAACAAAAAAAQAAAAAAACAAAAAAARAAAAAAACAAAAAAASAAAAAAACAAAAAAATAAAAAAACAAAAAAAUAAAAAAACAAAAAAAVAAAAAAACAAAAAAAWAAAAAAACAAAAAAAXAAAAAAACAAAAAAAYAAAAAAACAAAAAAA=")
@@ -127,16 +134,19 @@ tile_map_data = PackedByteArray("AAAAAAEAAAAAAAIAAAAAAAIAAAAAAAIAAAAAAAMAAAAAAAM
 tile_map_data = PackedByteArray("AAABAAMAAAAAAAQAAAACAAMAAAABAAQAAAAWAAMAAAAAAAQAAAAXAAMAAAABAAQAAAA=")
 
 [node name="LightcastTiles" parent="RoomB" index="8"]
+visible = false
 tile_map_data = PackedByteArray("AAAAAAEAAAADAAMAAAAAAAIAAAADAAMAAAAAAAMAAAADAAMAAAABAAEAAAADAAMAAAABAAIAAAADAAMAAAABAAMAAAADAAMAAAACAAEAAAADAAMAAAACAAIAAAADAAMAAAACAAMAAAADAAMAAAADAAEAAAADAAMAAAADAAIAAAADAAMAAAADAAMAAAADAAMAAAAEAAEAAAADAAMAAAAEAAIAAAADAAMAAAAEAAMAAAADAAMAAAAFAAEAAAADAAMAAAAFAAIAAAADAAMAAAAFAAMAAAADAAMAAAAGAAEAAAADAAMAAAAGAAIAAAADAAMAAAAGAAMAAAADAAMAAAAHAAEAAAADAAMAAAAHAAIAAAADAAMAAAAHAAMAAAADAAMAAAAIAAEAAAADAAMAAAAIAAIAAAADAAMAAAAIAAMAAAADAAMAAAAJAAEAAAADAAMAAAAJAAIAAAADAAMAAAAJAAMAAAADAAMAAAAKAAEAAAADAAMAAAAKAAIAAAADAAMAAAAKAAMAAAADAAMAAAALAAEAAAADAAMAAAALAAIAAAADAAMAAAALAAMAAAADAAMAAAAMAAEAAAADAAMAAAAMAAIAAAADAAMAAAAMAAMAAAADAAMAAAANAAEAAAADAAMAAAANAAIAAAADAAMAAAANAAMAAAADAAMAAAAOAAEAAAADAAMAAAAOAAIAAAADAAMAAAAOAAMAAAADAAMAAAAPAAEAAAADAAMAAAAPAAIAAAADAAMAAAAPAAMAAAADAAMAAAAQAAEAAAADAAMAAAAQAAIAAAADAAMAAAAQAAMAAAADAAMAAAARAAEAAAADAAMAAAARAAIAAAADAAMAAAARAAMAAAADAAMAAAASAAEAAAADAAMAAAASAAIAAAADAAMAAAASAAMAAAADAAMAAAATAAEAAAADAAMAAAATAAIAAAADAAMAAAATAAMAAAADAAMAAAAUAAEAAAADAAMAAAAUAAIAAAADAAMAAAAUAAMAAAADAAMAAAAVAAEAAAADAAMAAAAVAAIAAAADAAMAAAAVAAMAAAADAAMAAAAWAAEAAAADAAMAAAAWAAIAAAADAAMAAAAWAAMAAAADAAMAAAAXAAEAAAADAAMAAAAXAAIAAAADAAMAAAAXAAMAAAADAAMAAAAYAAEAAAADAAMAAAAYAAIAAAADAAMAAAAYAAMAAAADAAMAAAAAAAAAAAADAAMAAAABAAAAAAADAAMAAAACAAAAAAADAAMAAAADAAAAAAADAAMAAAAEAAAAAAADAAMAAAAFAAAAAAADAAMAAAAGAAAAAAADAAMAAAAHAAAAAAADAAMAAAAIAAAAAAADAAMAAAAJAAAAAAADAAMAAAAKAAAAAAADAAMAAAALAAAAAAADAAMAAAAMAAAAAAADAAMAAAANAAAAAAADAAMAAAAOAAAAAAADAAMAAAAPAAAAAAADAAMAAAAQAAAAAAADAAMAAAARAAAAAAADAAMAAAASAAAAAAADAAMAAAATAAAAAAADAAMAAAAUAAAAAAADAAMAAAAVAAAAAAADAAMAAAAWAAAAAAADAAMAAAAXAAAAAAADAAMAAAAYAAAAAAADAAMAAAA=")
 
 [node name="DoorA" parent="RoomB/Doors" index="0" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(32, 64)
+facing_dir = 1
 id = &"A"
 to_room = NodePath("../../../RoomA")
 to_door_id = &"A"
 
 [node name="DoorB" parent="RoomB/Doors" index="1" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(368, 64)
+facing_dir = 1
 id = &"B"
 to_room = NodePath("../../../RoomA")
 to_door_id = &"B"
@@ -145,7 +155,10 @@ to_door_id = &"B"
 polygon = PackedVector2Array(395.314, 0, 400, 4.68629, 400, 59.3137, 395.314, 64, 4.68629, 64, 0, 59.3137, 0, 0)
 
 [node name="RoomC" parent="." instance=ExtResource("1_w8mei")]
-position = Vector2(-89, 111)
+position = Vector2(184, 328)
+
+[node name="LightMaskTexture" parent="RoomC" index="3"]
+visible = false
 
 [node name="FloorTiles" parent="RoomC" index="4"]
 tile_map_data = PackedByteArray("AAADAAEAAAACAAAAAAADAAIAAAACAAAAAAADAAMAAAACAAAAAAAAAAMAAAACAAAAAAAAAAIAAAACAAAAAAAAAAEAAAACAAAAAAABAAEAAAACAAAAAAACAAEAAAACAAAAAAACAAIAAAACAAAAAAACAAMAAAACAAAAAAABAAMAAAACAAAAAAABAAIAAAACAAAAAAADAAQAAAACAAAAAAADAAUAAAACAAAAAAADAAYAAAACAAAAAAADAAcAAAACAAAAAAADAAgAAAACAAAAAAADAAkAAAACAAAAAAADAAoAAAACAAAAAAADAAsAAAACAAAAAAADAAwAAAACAAAAAAACAAwAAAACAAAAAAABAAwAAAACAAAAAAAAAAwAAAACAAAAAAAAAAsAAAACAAAAAAAAAAoAAAACAAAAAAAAAAkAAAACAAAAAAAAAAgAAAACAAAAAAAAAAcAAAACAAAAAAAAAAYAAAACAAAAAAAAAAUAAAACAAAAAAAAAAQAAAACAAAAAAABAAQAAAACAAAAAAABAAUAAAACAAAAAAABAAYAAAACAAAAAAABAAcAAAACAAAAAAABAAgAAAACAAAAAAABAAkAAAACAAAAAAABAAoAAAACAAAAAAACAAgAAAACAAAAAAACAAcAAAACAAAAAAACAAYAAAACAAAAAAACAAUAAAACAAAAAAACAAQAAAACAAAAAAACAAkAAAACAAAAAAACAAoAAAACAAAAAAACAAsAAAACAAAAAAABAAsAAAACAAAAAAADAAAAAAACAAAAAAACAAAAAAACAAAAAAABAAAAAAACAAAAAAAAAAAAAAACAAAAAAA=")
@@ -165,12 +178,14 @@ tile_map_data = PackedByteArray("AAADAAEAAAADAAMAAAADAAIAAAADAAMAAAADAAMAAAADAAM
 
 [node name="DoorA" parent="RoomC/Doors" index="0" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(64, 32)
+facing_dir = 3
 id = &"A"
 to_room = NodePath("../../../RoomA")
 to_door_id = &"D"
 
 [node name="DoorB" parent="RoomC/Doors" index="1" node_paths=PackedStringArray("to_room") instance=ExtResource("3_mv4ff")]
 position = Vector2(0, 176)
+facing_dir = 2
 id = &"B"
 to_room = NodePath("../../../RoomA")
 to_door_id = &"C"
@@ -178,14 +193,9 @@ to_door_id = &"C"
 [node name="CollisionPolygon2D" parent="RoomC/RoomArea" index="0"]
 polygon = PackedVector2Array(59.3137, 0, 64, 4.68629, 64, 203.314, 59.3137, 208, 4.68629, 208, 0, 203.314, 0, 0)
 
-[node name="KCamera" type="Camera2D" parent="."]
-position = Vector2(367, 128)
-script = ExtResource("4_vucwe")
-metadata/_custom_type_script = "uid://bl6qhuj0vbvqi"
-
 [node name="Player" type="CharacterBody2D" parent="."]
-y_sort_enabled = true
-position = Vector2(370, 54)
+position = Vector2(430, 131)
+collision_layer = 2
 motion_mode = 1
 script = ExtResource("3_emv2k")
 max_speed = 100.0
@@ -200,22 +210,45 @@ range_item_cull_mask = 3
 shadow_enabled = true
 shadow_item_cull_mask = 3
 texture = SubResource("GradientTexture2D_emv2k")
+texture_scale = 2.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+visible = false
 shape = SubResource("CircleShape2D_emv2k")
 
 [node name="RoomReparenter" type="Area2D" parent="Player"]
+visible = false
 top_level = true
 position = Vector2(126, 8)
 collision_layer = 0
 collision_mask = 128
 script = ExtResource("5_emv2k")
 
+[node name="KCamera" type="Camera2D" parent="Player/RoomReparenter"]
+script = ExtResource("4_vucwe")
+metadata/_custom_type_script = "uid://bl6qhuj0vbvqi"
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/RoomReparenter"]
 shape = SubResource("CircleShape2D_emv2k")
 
+[node name="DoorPasser" type="Area2D" parent="Player"]
+collision_layer = 0
+collision_mask = 32
+script = ExtResource("7_ojbya")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/DoorPasser"]
+shape = SubResource("CircleShape2D_mv4ff")
+
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(362, 84)
+position = Vector2(118, -92)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+offset_left = 297.0
+offset_top = 50.0
+offset_right = 563.0
+offset_bottom = 81.0
+color = Color(0.588235, 0.439216, 0.803922, 1)
 
 [editable path="RoomA"]
 [editable path="RoomB"]

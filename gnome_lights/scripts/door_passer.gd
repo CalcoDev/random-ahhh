@@ -1,13 +1,10 @@
-class_name RoomReparenter
+class_name DoorPasser
 extends Area2D
 
-signal on_enter_room(room: Room)
-signal on_exited_room(room: Room)
-
-var _unallowed: Dictionary[Room, bool] = {}
+signal on_enter_door(door: Door)
+signal on_exited_door(door: Door)
 
 var _room: Room
-
 var _parent: Node2D
 func _ready() -> void:
     _parent = get_parent()
@@ -30,23 +27,27 @@ func _handle_parent_exited() -> void:
             queue_free()
 
 func _on_area_entered(other: Area2D) -> void:
-    var other_parent = other.get_parent()
-    if other_parent is not Room:
-        return
-    var room := other_parent as Room
-    if room in _unallowed:
-        return
-    _unallowed[room] = true
-    if room.add_entity(_parent, _room.global_position if _room else Vector2.ZERO):
-        _room = room
-        on_enter_room.emit(room)
-        await _parent.tree_entered
-        await get_tree().process_frame
-    _unallowed.erase(room)
+    print("entered: ", other)
+    # var other_parent = other.get_parent()
+    # if other_parent is not Room:
+    #     return
+    # var room := other_parent as Room
+    # if room in _unallowed:
+    #     return
+    # _unallowed[room] = true
+    # if room.add_entity(_parent, _room.global_position if _room else Vector2.ZERO):
+    #     _room = room
+    #     on_enter_room.emit(room)
+    #     await _parent.tree_entered
+    #     await get_tree().process_frame
+    # _unallowed.erase(room)
+    pass
 
 func _on_area_exited(other: Area2D) -> void:
-    var other_parent = other.get_parent()
-    if other_parent is not Room:
-        return
-    var room := other_parent as Room
-    on_exited_room.emit(room)
+    print("exited ", other)
+    # var other_parent = other.get_parent()
+    # if other_parent is not Room:
+    #     return
+    # var room := other_parent as Room
+    # on_exited_room.emit(room)
+    pass

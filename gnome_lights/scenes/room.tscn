@@ -30,10 +30,12 @@ canvas_item_default_texture_filter = 0
 canvas_cull_mask = 4294443008
 
 [node name="ColorTexture" type="TextureRect" parent="." groups=["room_dont_move"]]
+z_index = 1
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="LightMaskTexture" type="TextureRect" parent="." groups=["room_dont_move"]]
+z_index = 1
 offset_right = 40.0
 offset_bottom = 40.0
 
@@ -44,16 +46,16 @@ tile_set = ExtResource("2_h6yst")
 y_sort_enabled = true
 tile_set = ExtResource("2_h6yst")
 
-[node name="EdgeTiles" type="TileMapLayer" parent="."]
+[node name="EdgeTiles" type="TileMapLayer" parent="." groups=["room_preview_lightmask_copy"]]
 light_mask = 3
 z_index = 1
 tile_set = ExtResource("2_h6yst")
 
-[node name="DoorTiles" type="TileMapLayer" parent="."]
+[node name="DoorTiles" type="TileMapLayer" parent="." groups=["room_preview_lightmask_copy"]]
 y_sort_enabled = true
 tile_set = ExtResource("2_h6yst")
 
-[node name="LightcastTiles" type="TileMapLayer" parent="."]
+[node name="LightcastTiles" type="TileMapLayer" parent="." groups=["room_preview_lightmask_copy"]]
 light_mask = 2
 visibility_layer = 524288
 z_index = 10
@@ -71,3 +73,7 @@ collision_mask = 0
 
 [node name="Entities" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = false
+collision_mask = 16

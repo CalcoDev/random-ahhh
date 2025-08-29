@@ -8,13 +8,14 @@ extends Node2D
 @export_tool_button("Viewports Preview Mode", "Callable") var setup_vp_preview_action = _setup_vp_preview
 
 const ROOM_DONT_MOVE_GROUP := &"room_dont_move"
+const ROOM_PREVIEW_LIGHTMASK_COPY_GROUP := &"room_preview_lightmask_copy"
 
-enum VP_SETUP_MODE {
-    Edit,
-    Preview
+enum VpSetupMode {
+    EDIT,
+    PREVIEW
 }
 
-var _vp_setup_mode := VP_SETUP_MODE.Edit
+var _vp_setup_mode := VpSetupMode.EDIT
 # var _vp_preview_offset := Vector2.ZERO
 var _vp_setup_data := {}
 
@@ -27,7 +28,7 @@ func _setup_vp_edit() -> void:
         child.reparent(self)
         if child is Node2D:
             child.position = Vector2.ZERO
-    _vp_setup_mode = VP_SETUP_MODE.Edit
+    _vp_setup_mode = VpSetupMode.EDIT
     
     get_lightcast_tiles().visible = _vp_setup_data.get("lightmask_visible", false)
 
@@ -35,11 +36,9 @@ func _setup_vp_preview() -> void:
     var color_vp := get_color_vp()
     var lightmask_vp := get_lightmask_vp()
 
-    var polygon := get_room_area_polygon()
-    var aabb := _get_polygon_aabb(polygon)
-
-    color_vp.size = aabb.size
-    lightmask_vp.size = aabb.size
+    var rect_size := get_room_rect_size()
+    color_vp.size = rect_size
+    lightmask_vp.size = rect_size
 
     for child in get_children():
         if child.is_in_group(ROOM_DONT_MOVE_GROUP):
@@ -47,7 +46,7 @@ func _setup_vp_preview() -> void:
         child.reparent(color_vp)
         if child is Node2D:
             child.position = Vector2.ZERO
-    _vp_setup_mode = VP_SETUP_MODE.Preview
+    _vp_setup_mode = VpSetupMode.PREVIEW
     
     lightmask_vp.world_2d = color_vp.world_2d
 
@@ -57,6 +56,11 @@ func _setup_vp_preview() -> void:
     var lightcast := get_lightcast_tiles()
     _vp_setup_data["lightmask_visible"] = lightcast.visible
     lightcast.visible = true
+
+func get_room_rect_size() -> Vector2:
+    var polygon := get_room_area_polygon()
+    var aabb := _get_polygon_aabb(polygon)
+    return aabb.size
 
 var _doors: Dictionary[StringName, Door] = {}
 
@@ -71,6 +75,9 @@ func _ready() -> void:
     
     if not Engine.is_editor_hint():
         _setup_vp_preview()
+    
+    for door: Door in _doors.values():
+        door.setup_collision_polygon()
 
 func _generate_outline() -> void:
     var floor_tiles :=  get_floor_tiles()
@@ -141,8 +148,12 @@ func _generate_outline() -> void:
                 var local_door_pos := to_local(global_door_pos)
                 if local_door_pos in previous_ids:
                     new_doors.append(previous_ids[local_door_pos])
+                    previous_ids[local_door_pos].facing_dir = _tilemap_door_data_to_door_facing_dir(door_data)
+                    previous_ids[local_door_pos].setup_collision_polygon()
                 else:
                     var door := preload("uid://5ej57o3nrqq2").instantiate() as Door
+                    door.facing_dir = _tilemap_door_data_to_door_facing_dir(door_data)
+                    door.setup_collision_polygon()
                     new_doors.append(door)
                     door.position = local_door_pos
                     door.on_id_changed.connect(_handle_door_id_changed)
@@ -159,6 +170,17 @@ func _generate_outline() -> void:
             door.name = "Door_NOID"
             if Engine.is_editor_hint():
                 door.owner = get_tree().edited_scene_root
+
+func _tilemap_door_data_to_door_facing_dir(data: StringName) -> Door.DoorFacingDir:
+    if data == &"bottom":
+        return Door.DoorFacingDir.BOTTOM
+    if data == &"top" or data == &"top_bottom":
+        return Door.DoorFacingDir.TOP
+    if data == &"left":
+        return Door.DoorFacingDir.LEFT
+    if data == &"right":
+        return Door.DoorFacingDir.RIGHT
+    return Door.DoorFacingDir.BOTTOM
 
 func _handle_door_id_changed(old_id: StringName, door: Door) -> void:
     if door.id == &"":
@@ -183,42 +205,46 @@ func _set_entity_pos(entity: Node2D, offset: Vector2) -> void:
     await get_tree().process_frame
     entity.global_position = offset
 
+func get_raycast() -> RayCast2D:
+    return $"ColorViewport/RayCast2D"
+
 func get_color_tex() -> TextureRect:
-    return $"ColorTexture" as TextureRect
+    return $"ColorTexture"
 
 func get_lightmask_tex() -> TextureRect:
-    return $"LightMaskTexture" as TextureRect
+    return $"LightMaskTexture"
 
 func get_color_vp() -> SubViewport:
-    return $"ColorViewport" as SubViewport
+    return $"ColorViewport"
 
 func get_lightmask_vp() -> SubViewport:
-    return $"LightMaskViewport" as SubViewport
+    return $"LightMaskViewport"
 
 func get_entity_node() -> Node2D:
-    return ($"ColorViewport/Entities" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"Entities") as Node2D
+    return ($"ColorViewport/Entities" if _vp_setup_mode == VpSetupMode.PREVIEW else $"Entities")
 
 func get_room_area() -> Area2D:
-    # return ($"ColorViewport/RoomAreaa" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"RoomArea") as Area2D
-    return $"RoomArea" as Area2D
+    # return ($"ColorViewport/RoomAreaa" if _vp_setup_mode == VpSetupMode.Preview else $"RoomArea") as Area2D
+    return $"RoomArea"
 
 func get_room_area_polygon() -> PackedVector2Array:
-    return ($"ColorRect/RoomArea/CollisionPolygon2D" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"RoomArea/CollisionPolygon2D").polygon as PackedVector2Array
+    # return ($"ColorViewport/RoomArea/CollisionPolygon2D" if _vp_setup_mode == VpSetupMode.Preview else $"RoomArea/CollisionPolygon2D").polygon
+    return get_room_area().get_child(0).polygon
 
 func get_floor_tiles() -> TileMapLayer:
-    return ($"ColorViewport/FloorTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"FloorTiles") as TileMapLayer
+    return ($"ColorViewport/FloorTiles" if _vp_setup_mode == VpSetupMode.PREVIEW else $"FloorTiles")
 
 func get_wall_tiles() -> TileMapLayer:
-    return ($"ColorViewport/WallTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"WallTiles") as TileMapLayer
+    return ($"ColorViewport/WallTiles" if _vp_setup_mode == VpSetupMode.PREVIEW else $"WallTiles")
 
 func get_door_tiles() -> TileMapLayer:
-    return ($"ColorViewport/DoorTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"DoorTiles") as TileMapLayer
+    return ($"ColorViewport/DoorTiles" if _vp_setup_mode == VpSetupMode.PREVIEW else $"DoorTiles")
 
 func get_edge_tiles() -> TileMapLayer:
-    return ($"ColorViewport/EdgeTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"EdgeTiles") as TileMapLayer
+    return ($"ColorViewport/EdgeTiles" if _vp_setup_mode == VpSetupMode.PREVIEW else $"EdgeTiles")
 
 func get_lightcast_tiles() -> TileMapLayer:
-    return ($"ColorViewport/LightcastTiles" if _vp_setup_mode == VP_SETUP_MODE.Preview else $"LightcastTiles") as TileMapLayer
+    return ($"ColorViewport/LightcastTiles" if _vp_setup_mode == VpSetupMode.PREVIEW else $"LightcastTiles")
 
 func get_all_door_ids() -> Array[StringName]:
     var ids: Array[StringName] = []

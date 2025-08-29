@@ -4,6 +4,41 @@ extends Node2D
 
 signal on_id_changed(old_id: StringName, door: Door)
 
+enum DoorFacingDir {
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT
+}
+@export var facing_dir: DoorFacingDir
+
+func get_transition_area() -> Area2D:
+    return $"Area2D"
+
+func setup_collision_polygon() -> void:
+    var polygon := get_transition_area().get_child(0) as CollisionShape2D
+    if facing_dir == Door.DoorFacingDir.LEFT:
+        polygon.position.x = 1
+    elif facing_dir == Door.DoorFacingDir.RIGHT:
+        polygon.position.x = -1
+    elif facing_dir == Door.DoorFacingDir.TOP:
+        polygon.rotation = PI / 2.0
+        polygon.position.y -= 12
+    elif facing_dir == Door.DoorFacingDir.BOTTOM:
+        polygon.rotation = PI / 2.0
+        polygon.position.y -= 1
+
+func get_room_position() -> Vector2:
+    return position + get_facing_dir_offset()
+
+# TODO(calco): Unhardcode this from tile size lmfao
+func get_facing_dir_offset() -> Vector2:
+    if facing_dir == DoorFacingDir.TOP:
+        return Vector2(0, -16)
+    if facing_dir == DoorFacingDir.BOTTOM:
+        return Vector2(0, 16)
+    return Vector2.ZERO
+
 @export var id: StringName:
     set(value):
         var new_id := value.to_upper()
@@ -19,6 +54,19 @@ signal on_id_changed(old_id: StringName, door: Door)
         notify_property_list_changed()
 
 var _to_door_id: StringName = &""
+
+# function stuff
+func get_door_to() -> Door:
+    return to_room.get_door(_to_door_id)
+
+func disable_preview() -> void:
+    get_room_preview_rect().visible = false
+
+func enable_preview() -> void:
+    get_room_preview_rect().visible = true
+
+func get_room_preview_rect() -> ColorRect:
+    return $"RoomPreviewRect"
 
 # Inspector Stuff
 func _get(property: StringName) -> Variant:
@@ -63,7 +111,7 @@ static var LINE_GRADIENT_FROM_COLOR := Color.BLUE
 static var LINE_GRADIENT_TO_COLOR := Color.GREEN
 const LINE_WIDTH := 2.0
 
-const DEBUG_VIEW_ENABLED := false
+const DEBUG_VIEW_ENABLED := true
 
 func _process(_delta: float) -> void:
     if Engine.is_editor_hint():
